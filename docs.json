@@ -62,7 +62,9 @@
             "group": "무기 제작",
             "pages": []
           },
-          "systems/weapons/module"
+          "systems/crafting/ai-pipeline",
+          "systems/weapons/module",
+          "systems/crafting/overview"
         ]
       }
     ]
