@@ -1,81 +1,112 @@
 ---
-title: "원소 기능정의 및 데이터"
-sidebarTitle: "기능정의·데이터"
-description: "원소 시스템의 구현 상태, 데이터 구조와 주요 미확정 파라미터를 정리합니다."
+title: "원소 기능정의"
+sidebarTitle: "기능정의"
+description: "원소 조합과 AI 신규 원소 생성의 구현 단위, 상태와 예외를 정의합니다."
+doc_type: feature
+status: review
+version: 0.2.0
+owner: TBD
+created: 2026-07-04
+updated: 2026-08-24
+scope: mvp
+deprecated: false
+tags: [element, feature]
+related: [/systems/elements/overview]
+source:
+  - https://docs.google.com/spreadsheets/d/16kQianr6STIpGuUe-tMKvrm3pUYlJ5uBXtDuhyJidGI/edit
 ---
 
-# 원소 기능정의 및 데이터
+# 원소 기능정의
 
-## 구현 상태 요약
+## 1. 기능 범위
 
-최신 기능정의서를 기준으로 원소 보관 UI와 원소 조합의 주요 클라이언트 기능은 대부분 구현 완료 상태입니다. 서버 검증과 일부 정책은 구현 중이거나 추가 결정이 필요합니다.
+현재 기능정의의 기준 범위는 **원소 조회, 원소 조합, AI 신규 원소 생성, 결과 저장**입니다. 영업 시작 전 원소 사전 보관 기능은 2026-08-24 결정으로 Deprecated 처리합니다.
 
-| 영역 | 상태 요약 |
-| --- | --- |
-| 원소 보관 화면/선택/표시 | 구현 완료 |
-| 보유 및 상태 검증 | 구현 중 또는 완료 |
-| 당일 보관 데이터 저장/잠금 | 구현 완료 |
-| 원소 조합 UI | 구현 완료 |
-| 조합 입력 검증/키 생성/DB 조회 | 구현 완료 |
-| AI 신규 원소 생성 | 구현 완료 |
-| 신규 원소 검증 | 대부분 구현 완료, 일부 정책 검토 중 |
-| 조합 결과 연출 | 구현 중 |
-| 비용·제한·중복 정책 | 미시작 또는 미확정 |
+## 2. 기능 목록
 
-## 주요 데이터 구조
+| 구분 | 주기능 | 상세기능 | 기획 상태 | 구현 상태 | 비고 |
+| --- | --- | --- | --- | --- | --- |
+| 클라이언트 | 원소 조회 | 보유 원소 목록 표시 | 확정 | 구현 완료 | 제작 팔레트에서 사용 |
+| 서버 | 원소 검증 | 보유/사용 가능 상태 검증 | 확정 | 구현 중/완료 | 요청 종류에 따라 적용 |
+| 클라이언트 | 원소 조합 | 원소 A/B 선택 | 확정 | 구현 완료 | 입력 2개 |
+| 서버 | 원소 조합 | combination_key 생성 | 확정 | 구현 완료 | 순서 비의존 |
+| 서버 | 원소 조합 | 기존 조합 조회 | 확정 | 구현 완료 | DB 우선 |
+| AI | 신규 원소 생성 | 이름/설명/색상 생성 | 확정 | 구현 완료 | DB 미존재 조합 |
+| 서버 | 신규 원소 검증 | 필수값/길이/HEX/중복 검증 | 일부 TBD | 대부분 구현 | 세부 정책 일부 미정 |
+| 서버 | 결과 저장 | ElementData/RecipeData 저장 | 확정 | 구현 완료 | 유저 보유 목록 추가 |
+| 클라이언트 | 결과 처리 | 결과 팝업/연출 | 확정 | 일부 구현 중 |  |
+| Deprecated | 원소 보관 | 영업 전 N종 선택/잠금 | 폐기 | 과거 구현 존재 | 신규 기준 사용 금지 |
+
+## 3. 핵심 처리 규칙
+
+### 조합 요청
+
+입력: `user_id`, `element_a_id`, `element_b_id`, 요청 컨텍스트
+
+처리:
+1. 두 원소의 보유/사용 가능 상태를 검증합니다.
+2. 두 ID를 정렬해 `combination_key`를 생성합니다.
+3. `ElementRecipeData`를 먼저 조회합니다.
+4. 결과가 있으면 AI 호출 없이 기존 결과를 반환합니다.
+5. 없으면 AI 신규 생성 프로세스로 이동합니다.
+
+출력: 결과 원소 ID, 신규 여부, 이름, 설명, 색상
+
+### AI 신규 생성
+
+입력은 두 원소의 이름/설명/색상과 세계관 톤입니다. 필수 출력은 `name`, `description`, `color_hex`입니다.
+
+검증 실패 시 재생성할 수 있으나 재시도 횟수와 최종 실패 처리는 TBD입니다.
+
+## 4. 데이터 계약
 
 ### ElementData
 
-| 필드 | 타입 | 설명 |
-| --- | --- | --- |
-| `element_id` | INT / UUID | 원소 고유 ID |
-| `element_name` | STRING | 고유 원소명 |
-| `description` | STRING | 원소 설명 |
-| `primary_color_hex` | STRING | 주색 |
-| `secondary_color_hex` | STRING | 보조색 |
-| `accent_color_hex` | STRING | 강조색 |
-| `source_type` | ENUM | 기본 / 조합 / 보상 / 운영자 등록 |
-| `is_ai_generated` | BOOL | AI 생성 여부 |
-| `status` | ENUM | 사용 가능 / 검수 필요 / 비활성 |
+`element_id`, `element_name`, `description`, `primary_color_hex`, `secondary_color_hex`, `accent_color_hex`, `source_type`, `is_ai_generated`, `status`, 생성/수정 시각을 가집니다.
 
 ### ElementRecipeData
 
-| 필드 | 설명 |
-| --- | --- |
-| `recipe_id` | 조합 레시피 ID |
-| `combination_key` | 정렬된 입력 원소 ID 기반 UNIQUE 키 |
-| `element_a_id` | 입력 원소 A |
-| `element_b_id` | 입력 원소 B |
-| `result_element_id` | 결과 원소 |
-| `generation_type` | DB / AI / 운영자 등록 |
-| `status` | 사용 가능 / 검수 필요 / 차단 |
+`recipe_id`, `combination_key`, `element_a_id`, `element_b_id`, `result_element_id`, `generation_type`, `status`를 가집니다.
 
 ### UserElementData
 
-유저가 어떤 원소를 언제 어떤 방식으로 획득했는지 관리합니다. `user_id`, `element_id`, `acquired_at`, `acquire_type`, `use_count`, `favorite` 등을 포함합니다.
+유저 보유 원소와 획득 방식을 관리합니다.
 
-### UserElementStorageData
+### Deprecated: UserElementStorageData
 
-과거 원소 기획서의 당일 보관 시스템용 데이터입니다. `user_id`, `day_id`, `selected_element_ids`, `max_storage_count`, `locked` 등을 포함합니다. 이 구조를 최종 플레이 규칙에 유지할지는 결정이 필요합니다.
+당일 보관 원소 목록을 저장하던 과거 구조입니다. 신규 구현 기준에서 사용하지 않습니다. 기존 데이터 마이그레이션/삭제 여부는 개발 정책으로 별도 결정해야 합니다.
 
-## 주요 파라미터
+## 5. 주요 파라미터
 
-| 파라미터 | 현재 값 | 상태 |
-| --- | --: | --- |
+| 파라미터 | 현재 값 | 기획 상태 |
+| --- | ---: | --- |
 | `ELEMENT_COMBINE_INPUT_COUNT` | 2 | 확정 |
 | `ELEMENT_NAME_MAX_LENGTH` | 12 | 확정 |
-| `ELEMENT_DESC_MAX_LENGTH` | 120 제안 | 추후 확정 |
-| `MAX_DAILY_ELEMENT_STORAGE` | N | 추후 확정 |
-| `AI_GENERATION_DAILY_LIMIT` | 미정 | 추후 확정 |
-| `AI_RETRY_COUNT` | 1 제안 | 추후 확정 |
-| `ELEMENT_COMBINE_COST_GOLD` | 미정 | 추후 확정 |
+| `ELEMENT_DESC_MAX_LENGTH` | 120 제안 | TBD |
+| `AI_GENERATION_DAILY_LIMIT` | 미정 | TBD |
+| `AI_RETRY_COUNT` | 1 제안 | TBD |
+| `ELEMENT_COMBINE_COST_GOLD` | 미정 | TBD |
 
-## 예외 처리
+`MAX_DAILY_ELEMENT_STORAGE`는 Deprecated 정책에 속하므로 신규 기준 파라미터에서 제거합니다.
 
-- AI 응답 실패: 재시도 후 최종 실패 정책 적용
-- 중복 이름: 기존 DB와 충돌 여부 검증
-- 잘못된 HEX: 응답 검증 실패
+## 6. 예외
+
 - 미보유/비활성 원소: 요청 거부
-- 최대 선택 수 초과: 클라이언트에서 차단 및 안내
+- 기존 조합: AI 호출 없이 캐시 결과 반환
+- AI 응답 실패: 재시도 정책 적용
+- 잘못된 HEX/필수값 누락: 검증 실패
+- 중복 이름: 기존 데이터와 충돌 처리
 
-미확정 정책은 [결정 필요 항목](/project/decisions)에서 통합 관리합니다.
+## 7. 미확정 정책
+
+- 동일 원소 조합 허용 여부
+- 조합 비용
+- 생성 일일 제한
+- 중복 획득 처리
+- AI 최종 실패 처리
+
+## 변경 이력
+
+| 버전 | 일자 | 내용 |
+| --- | --- | --- |
+| 0.2.0 | 2026-08-24 | 사전 보관 기능과 UserElementStorageData를 Deprecated 처리 |
