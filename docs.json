@@ -46,7 +46,9 @@
           },
           {
             "group": "원소 시스템",
-            "pages": []
+            "pages": [
+              "systems/elements/overview"
+            ]
           },
           {
             "group": "무기 시스템",
