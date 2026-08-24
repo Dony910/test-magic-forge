@@ -62,7 +62,8 @@
           {
             "group": "무기 제작",
             "pages": [
-              "systems/crafting/spec"
+              "systems/crafting/spec",
+              "systems/crafting/overview"
             ]
           }
         ]
