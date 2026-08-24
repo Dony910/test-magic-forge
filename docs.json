@@ -53,13 +53,15 @@
           },
           {
             "group": "무기 시스템",
-            "pages": []
+            "pages": [
+              "systems/weapons/overview"
+            ]
           },
           {
             "group": "무기 제작",
             "pages": []
           },
-          "systems/weapons/overview"
+          "systems/weapons/content"
         ]
       }
     ]
