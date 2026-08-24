@@ -76,7 +76,8 @@
             "group": "문서 표준",
             "pages": []
           },
-          "standards/document-rules"
+          "standards/document-rules",
+          "standards/frontmatter"
         ]
       }
     ]
