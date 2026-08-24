@@ -77,7 +77,8 @@
             "pages": []
           },
           "standards/document-rules",
-          "standards/frontmatter"
+          "standards/frontmatter",
+          "standards/lifecycle-agent-rules"
         ]
       }
     ]
