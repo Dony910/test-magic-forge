@@ -35,7 +35,7 @@
     "tabs": [
       {
         "tab": "기획 문서",
-        "groups": [
+        "pages": [
           {
             "group": "프로젝트",
             "pages": [
@@ -61,7 +61,8 @@
           {
             "group": "무기 제작",
             "pages": []
-          }
+          },
+          "systems/weapons/module"
         ]
       }
     ]
