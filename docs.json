@@ -31,7 +31,33 @@
           "icon": "newspaper"
         }
       ]
-    }
+    },
+    "tabs": [
+      {
+        "tab": "기획 문서",
+        "groups": [
+          {
+            "group": "프로젝트",
+            "pages": [
+              "project/overview",
+              "project/prd"
+            ]
+          },
+          {
+            "group": "원소 시스템",
+            "pages": []
+          },
+          {
+            "group": "무기 시스템",
+            "pages": []
+          },
+          {
+            "group": "무기 제작",
+            "pages": []
+          }
+        ]
+      }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
