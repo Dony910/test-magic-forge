@@ -55,7 +55,8 @@
             "group": "무기 시스템",
             "pages": [
               "systems/weapons/overview",
-              "systems/weapons/content"
+              "systems/weapons/content",
+              "systems/weapons/module"
             ]
           },
           {
