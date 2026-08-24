@@ -2,18 +2,18 @@
 title: "원소 기능정의"
 sidebarTitle: "기능정의"
 description: "원소 조합과 AI 신규 원소 생성의 구현 단위, 상태와 예외를 정의합니다."
-doc_type: feature
-status: review
-version: 0.2.0
-owner: TBD
-created: 2026-07-04
-updated: 2026-08-24
-scope: mvp
-deprecated: false
-tags: [element, feature]
-related: [/systems/elements/overview]
-source:
-  - https://docs.google.com/spreadsheets/d/16kQianr6STIpGuUe-tMKvrm3pUYlJ5uBXtDuhyJidGI/edit
+doc_type: "feature"
+status: "review"
+version: "0.3.0"
+owner: "TBD"
+created:
+
+updated:
+
+scope: "mvp"
+tags: ["element", "feature"]
+related: ["/systems/elements/overview"]
+source: ["https://docs.google.com/spreadsheets/d/16kQianr6STIpGuUe-tMKvrm3pUYlJ5uBXtDuhyJidGI/edit"]
 ---
 
 # 원소 기능정의
@@ -29,10 +29,10 @@ source:
 | 클라이언트 | 원소 조회 | 보유 원소 목록 표시 | 확정 | 구현 완료 | 제작 팔레트에서 사용 |
 | 서버 | 원소 검증 | 보유/사용 가능 상태 검증 | 확정 | 구현 중/완료 | 요청 종류에 따라 적용 |
 | 클라이언트 | 원소 조합 | 원소 A/B 선택 | 확정 | 구현 완료 | 입력 2개 |
-| 서버 | 원소 조합 | combination_key 생성 | 확정 | 구현 완료 | 순서 비의존 |
+| 서버 | 원소 조합 | combination\_key 생성 | 확정 | 구현 완료 | 순서 비의존 |
 | 서버 | 원소 조합 | 기존 조합 조회 | 확정 | 구현 완료 | DB 우선 |
-| AI | 신규 원소 생성 | 이름/설명/색상 생성 | 확정 | 구현 완료 | DB 미존재 조합 |
-| 서버 | 신규 원소 검증 | 필수값/길이/HEX/중복 검증 | 일부 TBD | 대부분 구현 | 세부 정책 일부 미정 |
+| AI | 신규 원소 생성 | 이름/설명/색상/태그 Affinity 생성 | 확정 | 구현 보완 필요 | DB 미존재 조합 |
+| 서버 | 신규 원소 검증 | 필수값/길이/HEX/중복/Affinity 검증 | 일부 TBD | 구현 보완 필요 | 활성 태그, 최대 4개, 값 1~5 검증 |
 | 서버 | 결과 저장 | ElementData/RecipeData 저장 | 확정 | 구현 완료 | 유저 보유 목록 추가 |
 | 클라이언트 | 결과 처리 | 결과 팝업/연출 | 확정 | 일부 구현 중 |  |
 | Deprecated | 원소 보관 | 영업 전 N종 선택/잠금 | 폐기 | 과거 구현 존재 | 신규 기준 사용 금지 |
@@ -44,6 +44,7 @@ source:
 입력: `user_id`, `element_a_id`, `element_b_id`, 요청 컨텍스트
 
 처리:
+
 1. 두 원소의 보유/사용 가능 상태를 검증합니다.
 2. 두 ID를 정렬해 `combination_key`를 생성합니다.
 3. `ElementRecipeData`를 먼저 조회합니다.
@@ -54,7 +55,9 @@ source:
 
 ### AI 신규 생성
 
-입력은 두 원소의 이름/설명/색상과 세계관 톤입니다. 필수 출력은 `name`, `description`, `color_hex`입니다.
+입력은 두 원소의 이름/설명/색상, `ElementTagAffinity`, 활성 태그 목록과 판정 가이드, 세계관 톤입니다.
+
+필수 출력은 `name`, `description`, `color_hex`, `tag_affinities`입니다. `tag_affinities`는 최대 4개이며 각 값은 `1~5`이고 활성 태그 ID만 사용할 수 있습니다. 입력 원소의 Affinity를 단순 합산/평균하지 않고 AI가 생성한 신규 원소의 실제 물성·현상 설명을 기준으로 다시 선정합니다.
 
 검증 실패 시 재생성할 수 있으나 재시도 횟수와 최종 실패 처리는 TBD입니다.
 
@@ -62,7 +65,9 @@ source:
 
 ### ElementData
 
-`element_id`, `element_name`, `description`, `primary_color_hex`, `secondary_color_hex`, `accent_color_hex`, `source_type`, `is_ai_generated`, `status`, 생성/수정 시각을 가집니다.
+`element_id`, `element_name`, `description`, `primary_color_hex`, `secondary_color_hex`, `accent_color_hex`, `source_type`, `is_ai_generated`, `status`, 생성/수정 시각과 원소의 `ElementTagAffinity`를 가집니다.
+
+`ElementTagAffinity`는 `element_id`, `tag_id`, `affinity(1~5)` 개념으로 관리하며 원소당 최대 4개입니다. 기본/운영 원소는 사람이 지정하고 AI 조합 원소는 최초 생성 시 AI가 지정한 뒤 저장합니다. 운영자는 저장된 Affinity를 수정할 수 있습니다.
 
 ### ElementRecipeData
 
@@ -79,7 +84,7 @@ source:
 ## 5. 주요 파라미터
 
 | 파라미터 | 현재 값 | 기획 상태 |
-| --- | ---: | --- |
+| --- | --: | --- |
 | `ELEMENT_COMBINE_INPUT_COUNT` | 2 | 확정 |
 | `ELEMENT_NAME_MAX_LENGTH` | 12 | 확정 |
 | `ELEMENT_DESC_MAX_LENGTH` | 120 제안 | TBD |
@@ -95,6 +100,8 @@ source:
 - 기존 조합: AI 호출 없이 캐시 결과 반환
 - AI 응답 실패: 재시도 정책 적용
 - 잘못된 HEX/필수값 누락: 검증 실패
+- 등록되지 않았거나 비활성인 태그 ID: 검증 실패
+- Affinity 값 범위 이탈, 4개 초과, 중복 태그: 검증 실패
 - 중복 이름: 기존 데이터와 충돌 처리
 
 ## 7. 미확정 정책

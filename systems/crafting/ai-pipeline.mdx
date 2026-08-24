@@ -2,18 +2,18 @@
 title: "스케치 분석과 AI 파이프라인"
 sidebarTitle: "AI 파이프라인"
 description: "벡터 스케치를 로컬 분석해 구조화 데이터로 만들고 로컬 텍스트 LLM에 전달하는 기능 흐름을 정의합니다."
-doc_type: feature
-status: review
-version: 0.2.0
-owner: TBD
-created: 2026-07-17
-updated: 2026-08-24
-scope: mvp
-deprecated: false
-tags: [crafting, ai, opencv]
-related: [/systems/crafting/overview, /systems/crafting/spec]
-source:
-  - https://docs.google.com/document/d/1wUoOr4lTBuu-vWQUQUhb_nCGBtd-uTp5VNvpVuVQVbo/edit
+doc_type: "feature"
+status: "review"
+version: "0.3.0"
+owner: "TBD"
+created:
+
+updated:
+
+scope: "mvp"
+tags: ["crafting", "ai", "opencv"]
+related: ["/systems/crafting/overview", "/systems/crafting/spec"]
+source: ["https://docs.google.com/document/d/1wUoOr4lTBuu-vWQUQUhb_nCGBtd-uTp5VNvpVuVQVbo/edit"]
 ---
 
 # 스케치 분석과 AI 파이프라인
@@ -66,10 +66,14 @@ source:
 - 원소별 영역 분석값
 - 스트로크 요약값
 - 실제 사용 원소
+- 원소별 `ElementTagAffinity`
 - 주원소
 - NPC 의뢰 정보
 - 무기 종류/파츠 정의
+- 활성 `TagDefinition` 목록과 `EvaluationGuide`
 - 생성 규칙
+
+태그 판정에 사용하는 입력은 원시 제작 로그를 그대로 전달하지 않고, 완성 결과를 설명하는 구조화된 형태/원소/재료/제작 데이터로 정제합니다.
 
 ## 6. LLM/생성 출력
 
@@ -78,7 +82,9 @@ source:
 - 원소별 반영 정보
 - 주원소 자동 판정 결과(미지정 시)
 - 이름/설명/속성
-- 평가용 태그
+- 활성 태그 전체의 Raw 평가: `tag_id`, `value(0~5)`, `prominence(0~5)`, `confidence(0~1)`
+
+대표 WeaponTag의 최종 선정은 LLM이 아니라 코드의 태그 선정 정책이 수행합니다.
 
 ## 7. 역할 분리 원칙
 

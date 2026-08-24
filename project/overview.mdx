@@ -4,12 +4,11 @@ sidebarTitle: "GDD"
 description: "마법공방의 대장장이의 플레이어 판타지, 핵심 재미, 게임 구조와 주요 시스템 관계를 정의합니다."
 doc_type: "gdd"
 status: "review"
-version: "0.2.0"
+version: "0.3.0"
 owner: "TBD"
 created: "2026-08-24"
 updated: "2026-08-24"
 scope: "mvp"
-deprecated: false
 tags: ["project", "game-design"]
 related: ["/project/prd", "/systems/elements/overview", "/systems/weapons/overview", "/systems/crafting/overview", "/systems/tags/overview"]
 source: ["https://docs.google.com/document/d/1aApq-sWjM1h38rj4n9DuSuWTCElJiHmOK02vd1bfv4o/edit"]
@@ -19,7 +18,7 @@ source: ["https://docs.google.com/document/d/1aApq-sWjM1h38rj4n9DuSuWTCElJiHmOK0
 
 ## 1. 게임 개요
 
-**마법공방의 대장장이 (Magic Forge)**는 동서양 판타지와 무협이 교차하는 세계에서 손님의 의뢰를 해석하고, 원소와 스케치로 맞춤 무기를 제작하는 상점 경영 게임입니다. 프로젝트 코드명은 **Project FORGE**입니다.
+\*\*마법공방의 대장장이 (Magic Forge)\*\*는 동서양 판타지와 무협이 교차하는 세계에서 손님의 의뢰를 해석하고, 원소와 스케치로 맞춤 무기를 제작하는 상점 경영 게임입니다. 프로젝트 코드명은 **Project FORGE**입니다.
 
 ## 2. 플레이어 판타지
 
@@ -52,7 +51,7 @@ NPC 방문
 - 보유한 사용 가능 원소 전체를 팔레트에 표시하며 **사전 원소 보관 단계는 사용하지 않습니다**.
 - 한 제작에서 실제 사용할 수 있는 서로 다른 원소 종류 수는 N개로 제한합니다.
 - 스케치 해석에는 VLM을 사용하지 않습니다.
-- NPC 의뢰와 완성 무기는 태그 데이터를 가지며, 태그 유사도를 평가 점수의 핵심 입력으로 사용합니다.
+- NPC 의뢰의 요구 태그는 기획자가 직접 정의하고, 완성 무기는 AI Raw 태그 판정 후 대표 WeaponTag를 선정합니다. MVP 평가는 두 태그 값의 차이를 핵심 입력으로 사용합니다.
 
 ## 6. 주요 시스템 지도
 
