@@ -74,11 +74,13 @@
         "pages": [
           {
             "group": "문서 표준",
-            "pages": []
+            "pages": [
+              "standards/document-rules"
+            ]
           },
-          "standards/document-rules",
           "standards/frontmatter",
-          "standards/lifecycle-agent-rules"
+          "standards/lifecycle-agent-rules",
+          "standards/templates"
         ]
       }
     ]
