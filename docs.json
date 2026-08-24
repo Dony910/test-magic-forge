@@ -19,7 +19,20 @@
               "standards/document-rules",
               "standards/frontmatter",
               "standards/lifecycle-agent-rules",
-              "standards/templates"
+              "standards/templates",
+              {
+                "group": "문서 종류별 작성 가이드",
+                "pages": [
+                  "standards/document-types/prd",
+                  "standards/document-types/gdd",
+                  "standards/document-types/system",
+                  "standards/document-types/content",
+                  "standards/document-types/feature",
+                  "standards/document-types/wbs",
+                  "standards/document-types/decision",
+                  "standards/document-types/data"
+                ]
+              }
             ]
           },
           {
