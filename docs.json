@@ -68,6 +68,16 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "마법공방의 대장장이",
+        "pages": [
+          {
+            "group": "문서 표준",
+            "pages": []
+          },
+          "standards/document-rules"
+        ]
       }
     ]
   },
