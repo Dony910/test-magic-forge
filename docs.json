@@ -47,7 +47,8 @@
           {
             "group": "원소 시스템",
             "pages": [
-              "systems/elements/overview"
+              "systems/elements/overview",
+              "systems/elements/spec"
             ]
           },
           {
