@@ -35,7 +35,7 @@
     "tabs": [
       {
         "tab": "기획 문서",
-        "pages": [
+        "groups": [
           {
             "group": "프로젝트",
             "pages": [
@@ -63,10 +63,7 @@
             "pages": [
               "systems/crafting/spec"
             ]
-          },
-          "systems/crafting/ai-pipeline",
-          "systems/weapons/module",
-          "systems/crafting/overview"
+          }
         ]
       }
     ]
