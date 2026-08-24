@@ -40,7 +40,8 @@
             "group": "프로젝트",
             "pages": [
               "project/overview",
-              "project/prd"
+              "project/prd",
+              "project/decisions"
             ]
           },
           {
