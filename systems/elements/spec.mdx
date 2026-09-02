@@ -4,16 +4,18 @@ sidebarTitle: "기능정의"
 description: "원소 조합과 AI 신규 원소 생성의 구현 단위, 상태와 예외를 정의합니다."
 doc_type: "feature"
 status: "review"
-version: "0.3.0"
+version: "0.4.0"
 owner: "TBD"
-created:
-
-updated:
-
+created: null
+updated: null
 scope: "mvp"
-tags: ["element", "feature"]
-related: ["/systems/elements/overview"]
-source: ["https://docs.google.com/spreadsheets/d/16kQianr6STIpGuUe-tMKvrm3pUYlJ5uBXtDuhyJidGI/edit"]
+tags:
+  - "element"
+  - "feature"
+related:
+  - "/systems/elements/overview"
+source:
+  - "https://docs.google.com/spreadsheets/d/16kQianr6STIpGuUe-tMKvrm3pUYlJ5uBXtDuhyJidGI/edit"
 ---
 
 # 원소 기능정의
@@ -29,7 +31,7 @@ source: ["https://docs.google.com/spreadsheets/d/16kQianr6STIpGuUe-tMKvrm3pUYlJ5
 | 클라이언트 | 원소 조회 | 보유 원소 목록 표시 | 확정 | 구현 완료 | 제작 팔레트에서 사용 |
 | 서버 | 원소 검증 | 보유/사용 가능 상태 검증 | 확정 | 구현 중/완료 | 요청 종류에 따라 적용 |
 | 클라이언트 | 원소 조합 | 원소 A/B 선택 | 확정 | 구현 완료 | 입력 2개 |
-| 서버 | 원소 조합 | combination\_key 생성 | 확정 | 구현 완료 | 순서 비의존 |
+| 서버 | 원소 조합 | combination_key 생성 | 확정 | 구현 완료 | 순서 비의존 |
 | 서버 | 원소 조합 | 기존 조합 조회 | 확정 | 구현 완료 | DB 우선 |
 | AI | 신규 원소 생성 | 이름/설명/색상/태그 Affinity 생성 | 확정 | 구현 보완 필요 | DB 미존재 조합 |
 | 서버 | 신규 원소 검증 | 필수값/길이/HEX/중복/Affinity 검증 | 일부 TBD | 구현 보완 필요 | 활성 태그, 최대 4개, 값 1~5 검증 |
@@ -57,7 +59,9 @@ source: ["https://docs.google.com/spreadsheets/d/16kQianr6STIpGuUe-tMKvrm3pUYlJ5
 
 입력은 두 원소의 이름/설명/색상, `ElementTagAffinity`, 활성 태그 목록과 판정 가이드, 세계관 톤입니다.
 
-필수 출력은 `name`, `description`, `color_hex`, `tag_affinities`입니다. `tag_affinities`는 최대 4개이며 각 값은 `1~5`이고 활성 태그 ID만 사용할 수 있습니다. 입력 원소의 Affinity를 단순 합산/평균하지 않고 AI가 생성한 신규 원소의 실제 물성·현상 설명을 기준으로 다시 선정합니다.
+필수 출력은 `name`, `description`, `color_hex`, `tag_affinities`입니다. `tag_affinities`는 최대 4개이며 각 값은 `1~5`이고 활성 태그 ID만 사용할 수 있습니다. 입력 원소의 Affinity를 단순 합산/평균하지 않고 AI가 생성한 신규 원소의 실제 물성·현상 설명을 기준으로 다시 선정합니다. 결과 Affinity는 부모 원소 Affinity의 합집합으로 제한하지 않으며, 조합 결과에서 새롭게 발생한 물성·현상으로 근거를 설명할 수 있다면 부모에게 없던 활성 태그도 선택할 수 있습니다.
+
+AI는 먼저 신규 원소의 이름/설명/물성·현상을 정의하고, 그 결과를 기준으로 전체 활성 태그와 `EvaluationGuide`를 검토한 뒤 최대 4개의 대표 Affinity를 선택합니다. 부모 Affinity는 상속 목록이 아니라 조합 의미를 해석하기 위한 컨텍스트로 취급합니다.
 
 검증 실패 시 재생성할 수 있으나 재시도 횟수와 최종 실패 처리는 TBD입니다.
 
@@ -116,4 +120,6 @@ source: ["https://docs.google.com/spreadsheets/d/16kQianr6STIpGuUe-tMKvrm3pUYlJ5
 
 | 버전 | 일자 | 내용 |
 | --- | --- | --- |
+| 0.4.0 | 2026-09-02 | 신규 원소 Affinity를 부모 합집합으로 제한하지 않는 생성 규칙과 AI 선정 절차 반영 |
+| 0.3.0 | 2026-08-25 | ElementTagAffinity 생성·검증·저장 계약 반영 |
 | 0.2.0 | 2026-08-24 | 사전 보관 기능과 UserElementStorageData를 Deprecated 처리 |

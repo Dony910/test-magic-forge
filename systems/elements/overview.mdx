@@ -4,16 +4,20 @@ sidebarTitle: "시스템 개요"
 description: "무기 제작 재료인 원소의 역할, 조합, AI 생성과 제작 사용 규칙을 정의합니다."
 doc_type: "system"
 status: "review"
-version: "0.3.0"
+version: "0.4.0"
 owner: "TBD"
-created:
-
-updated:
-
+created: null
+updated: null
 scope: "mvp"
-tags: ["element", "crafting"]
-related: ["/systems/elements/spec", "/systems/crafting/overview", "/systems/tags/overview"]
-source: ["https://docs.google.com/document/d/1ijNkfOC5zi_wLTIIC1MIvp_74046gdg8OT8Vv43GaPA/edit"]
+tags:
+  - "element"
+  - "crafting"
+related:
+  - "/systems/elements/spec"
+  - "/systems/crafting/overview"
+  - "/systems/tags/overview"
+source:
+  - "https://docs.google.com/document/d/1ijNkfOC5zi_wLTIIC1MIvp_74046gdg8OT8Vv43GaPA/edit"
 ---
 
 # 원소 시스템
@@ -75,6 +79,7 @@ MVP의 조합 입력 수는 **2개**이며 순서 비의존 방식입니다.
 - 조합으로 처음 생성되는 신규 원소는 AI가 활성 태그 목록에서 Affinity를 생성합니다.
 - AI가 생성한 Affinity는 원소 데이터와 함께 저장되며 이후 운영자가 수정할 수 있습니다.
 - 입력 원소의 Affinity를 단순 합산/평균해 결과 Affinity를 만들지 않습니다. 신규 원소의 실제 설명과 물성을 기준으로 다시 선정합니다.
+- 결과 Affinity는 부모 원소 Affinity의 합집합으로 제한하지 않습니다. 조합으로 새롭게 발생한 물성·현상에 근거가 있다면 부모에게 없던 활성 태그도 새 Affinity로 선택할 수 있습니다.
 
 플레이어에게는 태그명과 함께 수치 구간을 성향 강약으로 보여줍니다.
 
@@ -158,5 +163,6 @@ MVP의 조합 입력 수는 **2개**이며 순서 비의존 방식입니다.
 
 | 버전 | 일자 | 내용 |
 | --- | --- | --- |
+| 0.4.0 | 2026-09-02 | 조합 결과 Affinity를 부모 Affinity 합집합으로 제한하지 않고 신규 물성 기반 태그 추가 허용 |
 | 0.3.0 | 2026-08-25 | ElementTagAffinity, AI 조합 원소 태그 생성·저장, 플레이어 성향 강약 공개 규칙 반영 |
-| 0.2.0 | 2026-08-24 | 사전 보관 폐기 및 전체 팔레트\+실사용 N종 제한 정책 반영 |
+| 0.2.0 | 2026-08-24 | 사전 보관 폐기 및 전체 팔레트+실사용 N종 제한 정책 반영 |

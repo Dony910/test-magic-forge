@@ -4,15 +4,17 @@ sidebarTitle: "결정 기록"
 description: "프로젝트의 문서 충돌, 확정 결정과 남은 미확정 정책을 기록합니다."
 doc_type: "decision"
 status: "review"
-version: "0.3.0"
+version: "0.4.0"
 owner: "TBD"
-created:
-
-updated:
-
+created: null
+updated: null
 scope: "mvp"
-tags: ["decision", "project"]
-related: ["/project/prd", "/project/overview"]
+tags:
+  - "decision"
+  - "project"
+related:
+  - "/project/prd"
+  - "/project/overview"
 ---
 
 # Decision Log
@@ -53,7 +55,19 @@ related: ["/project/prd", "/project/overview"]
 
 **결정:** 태그 자체의 값은 음수화하지 않고 `0~5`를 유지합니다. 향후 태그 간 유사/반대 관계는 사람이 관리하는 `TagRelation.strength(-5~5)`로 분리해 부분 점수, 반대 성질 감점, 모순 검증 등에 사용합니다.
 
-### D-008 마이그레이션 문서 상태
+### D-008 대표 태그 선정 점수
+
+**결정:** 대표 WeaponTag는 `value` 우선 정렬이 아니라 `selectionScore = value + PROMINENCE_WEIGHT × prominence`를 기준으로 선정합니다. MVP 초기 `PROMINENCE_WEIGHT` 제안값은 `1.0`이며 설정값으로 관리합니다. `selectionScore`는 대표 태그 선정에만 사용하고 의뢰 평가에는 직접 사용하지 않습니다.
+
+### D-009 조합 원소의 신규 Affinity 허용
+
+**결정:** AI 조합 원소의 Affinity는 부모 원소 Affinity의 합집합으로 제한하지 않습니다. 조합 결과에서 새롭게 발생한 물성·현상·설명으로 근거를 설명할 수 있다면 전체 활성 태그 사전에서 부모에게 없던 Affinity를 새로 선택할 수 있습니다.
+
+### D-010 미요구 태그 약한 패널티
+
+**결정:** 의뢰 평가에서 요구 태그 오차와 미요구 대표 태그 오차를 분리합니다. `TotalTagError = RequestError + EXTRA_TAG_PENALTY_WEIGHT × ExtraTagError`를 기본 구조로 사용하며 MVP 초기 `EXTRA_TAG_PENALTY_WEIGHT` 제안값은 `0.25`입니다. 최종 값은 플레이테스트로 조정합니다.
+
+### D-011 마이그레이션 문서 상태
 
 **결정:** 기존 Google Docs/Sheets에서 재구성한 문서는 검토 완료 전까지 `status: review`, `owner: TBD`로 관리합니다.
 

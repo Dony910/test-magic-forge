@@ -4,16 +4,20 @@ sidebarTitle: "기능정의"
 description: "무기 제작 시스템의 구현 단위, 상태, 입력·출력과 예외를 정의합니다."
 doc_type: "feature"
 status: "review"
-version: "0.3.0"
+version: "0.4.0"
 owner: "TBD"
-created:
-
-updated:
-
+created: null
+updated: null
 scope: "mvp"
-tags: ["crafting", "feature"]
-related: ["/systems/crafting/overview", "/systems/crafting/ai-pipeline", "/systems/tags/overview"]
-source: ["https://docs.google.com/spreadsheets/d/1lLy2c2VU8yg95MeBsYozSpFKBM_wTPRBtMaLNYtuQbM/edit"]
+tags:
+  - "crafting"
+  - "feature"
+related:
+  - "/systems/crafting/overview"
+  - "/systems/crafting/ai-pipeline"
+  - "/systems/tags/overview"
+source:
+  - "https://docs.google.com/spreadsheets/d/1lLy2c2VU8yg95MeBsYozSpFKBM_wTPRBtMaLNYtuQbM/edit"
 ---
 
 # 무기 제작 기능정의
@@ -90,8 +94,10 @@ Draft → Validating → Generating → Success
 - MVP에서 원소는 소모하지 않습니다.
 - 이미지/Base64 VLM 입력은 사용하지 않습니다.
 - 생성 결과에는 활성 태그 전체의 Raw 판정(`value 0~5`, `prominence 0~5`, `confidence 0~1`)과 코드에서 선정한 대표 WeaponTag가 포함됩니다.
+- 대표 태그 선정용 `selectionScore = value + PROMINENCE_WEIGHT × prominence`를 계산하며 MVP 초기 제안값은 `PROMINENCE_WEIGHT = 1.0`입니다.
+- `selectionScore`는 대표 태그 선정에만 사용하고 의뢰 평가에는 직접 사용하지 않습니다.
 - Raw 태그 판정은 보관하며 대표 태그에서 제외된 항목은 실제 의뢰 평가에서 0으로 취급합니다.
-- 대표 태그 최대 개수는 하드코딩하지 않고 설정값으로 관리합니다.
+- 대표 태그 최대 개수와 `PROMINENCE_WEIGHT`는 하드코딩하지 않고 설정값으로 관리합니다.
 - 생성 성공 시 결과를 즉시 확정합니다.
 
 ## 6. 출력 계약
@@ -129,4 +135,6 @@ Draft → Validating → Generating → Success
 
 | 버전 | 일자 | 내용 |
 | --- | --- | --- |
+| 0.4.0 | 2026-09-02 | `value + prominence` 기반 대표 태그 선정 점수와 설정값 정책 반영 |
+| 0.3.0 | 2026-08-25 | Raw 태그 판정과 대표 WeaponTag 선정 책임 분리 |
 | 0.2.0 | 2026-08-24 | 확정된 원소·무기종류·VLM·태그 정책 반영 및 기획/구현 상태 분리 |

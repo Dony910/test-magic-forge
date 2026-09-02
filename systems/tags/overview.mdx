@@ -4,15 +4,21 @@ sidebarTitle: "태그 시스템"
 description: "NPC 의뢰와 완성 무기의 의미를 형용사 태그로 표현하고 유사도를 평가하는 MVP 핵심 시스템입니다."
 doc_type: "system"
 status: "review"
-version: "0.2.0"
+version: "0.3.0"
 owner: "TBD"
-created:
-
-updated:
-
+created: null
+updated: null
 scope: "mvp"
-tags: ["tag", "evaluation", "request", "weapon"]
-related: ["/project/overview", "/systems/crafting/overview", "/systems/elements/overview", "/project/decisions"]
+tags:
+  - "tag"
+  - "evaluation"
+  - "request"
+  - "weapon"
+related:
+  - "/project/overview"
+  - "/systems/crafting/overview"
+  - "/systems/elements/overview"
+  - "/project/decisions"
 ---
 
 # 태그 시스템
@@ -200,12 +206,23 @@ AI는 활성 태그 전체에 대해 다음 Raw 값을 반환합니다.
 
 `confidence`는 게임 평가 점수에 사용하지 않습니다.
 
-대표 무기 태그 선정의 MVP 기본 정책은 다음과 같습니다.
+대표 무기 태그 선정에서는 `value`와 `prominence`를 함께 사용합니다. `prominence`가 동점 처리에만 사용되어 사실상 영향력이 사라지는 문제를 막기 위해 다음 파생 점수를 계산합니다.
+
+```text
+selectionScore = value + PROMINENCE_WEIGHT × prominence
+```
+
+MVP 초기값은 `PROMINENCE_WEIGHT = 1.0`으로 두되, 하드코딩하지 않고 밸런스 설정값으로 관리합니다. `selectionScore`는 **대표 WeaponTag를 고르는 용도에만 사용하며 의뢰 평가 점수에는 직접 사용하지 않습니다.**
+
+대표 태그 선정의 MVP 기본 정책은 다음과 같습니다.
 
 1. `value == 0` 제거
-2. `value` 내림차순 정렬
-3. 같은 `value`에서는 `prominence` 내림차순 정렬
-4. 설정된 최대 태그 종류 수만큼 선택
+2. `selectionScore` 내림차순 정렬
+3. 같은 `selectionScore`에서는 `value` 내림차순 정렬
+4. 다시 같으면 `prominence` 내림차순 정렬
+5. 설정된 최대 태그 종류 수만큼 선택
+
+예를 들어 `단단한(value 5, prominence 1)`은 `selectionScore 6`, `날카로운(value 3, prominence 5)`는 `selectionScore 8`이므로 날카로운 태그가 대표 태그 선정에서 앞설 수 있습니다.
 
 최대 태그 종류 수는 하드코딩하지 않고 설정값으로 관리합니다. 향후 무기 티어에 따라 확장할 수 있으며 정확한 MVP 수치는 확정 필요 항목으로 유지합니다.
 
@@ -256,7 +273,17 @@ ElementTagAffinity
 
 기존 원소 조합이 DB에 없으면 원소 시스템의 기존 정책대로 AI가 신규 원소를 생성합니다. 이때 이름, 설명, 색상과 함께 `ElementTagAffinity`도 생성합니다.
 
-입력 원소의 Affinity를 단순 합산하거나 평균 내서 결과 Affinity를 만들지 않습니다. AI가 먼저 조합 결과 원소의 실제 물성/현상을 정의하고 그 결과에 맞는 태그를 선택합니다.
+입력 원소의 Affinity를 단순 합산하거나 평균 내서 결과 Affinity를 만들지 않습니다. 또한 결과 Affinity를 **부모 원소가 가진 Affinity의 합집합으로 제한하지 않습니다.** AI가 먼저 조합 결과 원소의 실제 물성/현상/설명을 정의한 뒤, 전체 활성 `TagDefinition` 중 그 결과에 근거가 있는 태그를 새로 선택할 수 있습니다.
+
+즉 부모 원소 어느 쪽에도 없던 Affinity라도 조합 결과에서 새롭게 발생한 물성이나 현상으로 설명 가능하면 추가할 수 있습니다. 반대로 부모 원소에 있던 Affinity라도 결과 원소에서 실제로 드러나지 않으면 제외할 수 있습니다. 부모 Affinity는 결과를 제한하는 상속 목록이 아니라 조합 의미를 해석하기 위한 컨텍스트입니다.
+
+AI의 신규 원소 Affinity 결정 순서는 다음을 기본으로 합니다.
+
+1. 두 부모 원소의 이름, 설명, 색상, Affinity를 바탕으로 조합 결과의 이름과 실제 물성·현상·설명을 먼저 정의합니다.
+2. 생성된 결과 설명을 기준으로 전체 활성 `TagDefinition`과 `EvaluationGuide`를 검토합니다.
+3. 결과에서 실제 근거가 있는 태그에 `1~5` Affinity를 부여합니다.
+4. 대표성이 높은 항목을 최대 4개 선택합니다.
+5. 부모에게 존재했다는 이유만으로 태그를 유지하거나, 새로운 태그를 만들기 위한 목적으로 근거 없는 Affinity를 추가하지 않습니다.
 
 예를 들어 `불꽃 + 강철 → 화염강` 결과가 높은 열을 품지만 실제 화염은 내지 않는 금속이라면 `뜨거운`, `단단한`, `견고한`은 높고 `불타는`은 제외될 수 있습니다.
 
@@ -266,13 +293,23 @@ MVP에서는 별도의 `ElementTrait` 체계를 두지 않습니다. 원소 조�
 
 ## 5. 의뢰-무기 평가 규칙
 
-MVP의 기본 평가는 요구 태그와 **선정된 WeaponTag**의 값 차이를 기준으로 합니다.
-
-모든 관련 태그 ID의 합집합에 대해 다음 오차를 계산하는 구조를 출발점으로 사용합니다.
+MVP의 기본 평가는 요구 태그와 **선정된 WeaponTag**의 값 차이를 기준으로 하되, 요구한 태그를 틀린 경우와 단순히 추가 성질이 붙은 경우의 패널티를 분리합니다.
 
 ```text
-태그 오차 = Σ |요구 값 - 무기 값|
+RequestError
+= Σ |요구 값 - 무기 값|
+  (요구 태그에 대해서만)
+
+ExtraTagError
+= Σ 무기 값
+  (요구에 없는 대표 WeaponTag에 대해서만)
+
+TotalTagError
+= RequestError
++ EXTRA_TAG_PENALTY_WEIGHT × ExtraTagError
 ```
+
+`EXTRA_TAG_PENALTY_WEIGHT`는 밸런스 설정값이며 MVP 초기 제안값은 `0.25`입니다. 이 값은 플레이테스트로 조정합니다.
 
 예시:
 
@@ -288,15 +325,21 @@ MVP의 기본 평가는 요구 태그와 **선정된 WeaponTag**의 값 차이�
 화려한   1
 위압적인 2
 
-오차
+RequestError
 |3 - 2| = 1
 |2 - 4| = 2
 |1 - 1| = 0
-|0 - 2| = 2
-총 오차 = 5
+합계 = 3
+
+ExtraTagError
+위압적인 2
+합계 = 2
+
+EXTRA_TAG_PENALTY_WEIGHT = 0.25일 때
+TotalTagError = 3 + 0.25 × 2 = 3.5
 ```
 
-요청하지 않은 무기 태그는 요구값 `0`으로 간주하므로 자연스럽게 감점됩니다. 부족, 초과, 불필요 태그를 별도 예외 공식으로 나누지 않고 목표값과 실제값의 거리로 통일합니다.
+이 구조에서는 요구보다 부족하거나 과한 값은 동일하게 `RequestError`에 반영되지만, NPC가 요구하지 않은 추가 특성은 더 약하게 감점합니다. 향후 `TagRelation`이 도입되면 단순 미요구 태그와 요구 태그의 강한 반대 성질을 구분해 추가 패널티를 적용할 수 있습니다.
 
 최종 평가 점수의 `0~100` 정규화 공식은 아직 확정하지 않습니다.
 
@@ -441,5 +484,6 @@ TagRelation
 
 | 버전 | 일자 | 내용 |
 | --- | --- | --- |
+| 0.3.0 | 2026-09-02 | prominence 가중 대표 태그 선정, 부모에 없는 신규 Affinity 허용, 미요구 태그 약한 패널티 구조 반영 |
 | 0.2.0 | 2026-08-25 | 태그 사전, 0~5 강도, 무기 Raw 판정, 원소 Affinity, 기본 거리 평가와 관계도 고도화 방향을 반영해 시스템 초안 전면 재작성 |
 | 0.1.0 | 2026-08-24 | MVP 핵심 시스템으로 최초 정의 |
