@@ -2,16 +2,19 @@
 title: "Decision Log"
 sidebarTitle: "결정 기록"
 description: "프로젝트의 문서 충돌, 확정 결정과 남은 미확정 정책을 기록합니다."
-doc_type: decision
-status: review
-version: 0.2.0
-owner: TBD
-created: 2026-08-24
-updated: 2026-08-24
-scope: mvp
-deprecated: false
-tags: [decision, project]
-related: [/project/prd, /project/overview]
+doc_type: "decision"
+status: "review"
+version: "0.4.0"
+owner: "TBD"
+created: null
+updated: null
+scope: "mvp"
+tags:
+  - "decision"
+  - "project"
+related:
+  - "/project/prd"
+  - "/project/overview"
 ---
 
 # Decision Log
@@ -38,15 +41,40 @@ related: [/project/prd, /project/overview]
 
 ### D-004 태그 시스템 MVP 핵심 포함
 
-**결정:** 태그는 단순 생성 메타데이터가 아니라 MVP의 핵심 평가 시스템입니다. NPC 의뢰와 완성 무기에 모두 태그를 부여하고 태그 유사도를 평가 점수의 핵심 입력으로 사용합니다.
+**결정:** 태그는 단순 생성 메타데이터가 아니라 MVP의 핵심 평가 시스템입니다. NPC 의뢰의 요구 태그와 완성 무기의 대표 태그를 비교해 평가 점수의 핵심 입력으로 사용합니다.
 
-### D-005 마이그레이션 문서 상태
+### D-005 태그 사전과 AI 책임 분리
+
+**결정:** 태그 목록은 사람이 관리하는 고정 사전으로 운영하며 AI는 신규 태그를 생성하지 않습니다. 의뢰 정답 태그는 기획자가 직접 지정하고, 완성 무기는 AI가 활성 태그 전체를 `0~5`로 Raw 판정한 뒤 코드가 대표 태그를 선정합니다. 태그 명칭은 무기를 자연스럽게 수식하는 형용사/관형 표현으로 제한합니다.
+
+### D-006 원소 태그 친화도
+
+**결정:** 원소는 완성 무기 태그를 직접 보유하지 않고 `ElementTagAffinity(1~5)`를 최대 4개 가집니다. 기본/운영 원소는 사람이 설정하고 AI 조합 신규 원소는 AI가 활성 태그 목록에서 Affinity를 생성해 원소/조합식과 함께 영구 저장합니다. 플레이어에게는 `약함/보통/강함` 구간으로 성향을 공개합니다.
+
+### D-007 태그 관계도 고도화 방향
+
+**결정:** 태그 자체의 값은 음수화하지 않고 `0~5`를 유지합니다. 향후 태그 간 유사/반대 관계는 사람이 관리하는 `TagRelation.strength(-5~5)`로 분리해 부분 점수, 반대 성질 감점, 모순 검증 등에 사용합니다.
+
+### D-008 대표 태그 선정 점수
+
+**결정:** 대표 WeaponTag는 `value` 우선 정렬이 아니라 `selectionScore = value + PROMINENCE_WEIGHT × prominence`를 기준으로 선정합니다. MVP 초기 `PROMINENCE_WEIGHT` 제안값은 `1.0`이며 설정값으로 관리합니다. `selectionScore`는 대표 태그 선정에만 사용하고 의뢰 평가에는 직접 사용하지 않습니다.
+
+### D-009 조합 원소의 신규 Affinity 허용
+
+**결정:** AI 조합 원소의 Affinity는 부모 원소 Affinity의 합집합으로 제한하지 않습니다. 조합 결과에서 새롭게 발생한 물성·현상·설명으로 근거를 설명할 수 있다면 전체 활성 태그 사전에서 부모에게 없던 Affinity를 새로 선택할 수 있습니다.
+
+### D-010 미요구 태그 약한 패널티
+
+**결정:** 의뢰 평가에서 요구 태그 오차와 미요구 대표 태그 오차를 분리합니다. `TotalTagError = RequestError + EXTRA_TAG_PENALTY_WEIGHT × ExtraTagError`를 기본 구조로 사용하며 MVP 초기 `EXTRA_TAG_PENALTY_WEIGHT` 제안값은 `0.25`입니다. 최종 값은 플레이테스트로 조정합니다.
+
+### D-011 마이그레이션 문서 상태
 
 **결정:** 기존 Google Docs/Sheets에서 재구성한 문서는 검토 완료 전까지 `status: review`, `owner: TBD`로 관리합니다.
 
 ## 남은 미확정 정책
 
 ### 원소
+
 - 한 제작에서 사용할 수 있는 최대 원소 종류 수 N과 증가 규칙
 - 동일 원소 조합 허용 여부
 - 조합 비용과 AI 신규 생성 제한
@@ -55,14 +83,16 @@ related: [/project/prd, /project/overview]
 - 희귀 원소 획득 경로
 
 ### 태그
-- 태그 유사도/거리 계산의 MVP 공식
-- 중복 태그 1개당 가중치 증가 방식
-- 반대 성질 태그의 감점 방식과 강도
-- AI 태그 생성 출력 개수/범위
-- 태그 명칭 정규화와 동의어 처리
-- 태그 간 관계도 고도화 시점
+
+- 대표 WeaponTag 최대 종류 수의 정확한 MVP 값
+- 태그 오차를 최종 `0~100` 평가 점수로 정규화하는 공식
+- 요청 티어별 요구 태그 수와 난이도 규칙
+- AI 태그 판정 검증 실패 시 재시도/최종 실패 정책
+- 초기 태그 사전 후보의 최종 채택/삭제
+- 태그 관계도 고도화 적용 시점
 
 ### 무기 제작
+
 - 브러시 굵기 범위
 - 최대 원소 종류 수 N
 - 주원소 자동 판정 가중치
@@ -73,6 +103,7 @@ related: [/project/prd, /project/overview]
 - 결과 즉시 확정 정책의 장기 유지 여부
 
 ### 무기 모듈
+
 - `CV_METRIC_WEIGHTS`
 - 정량/의미 검색 Top K
 - RRF 후보 수와 재정렬 Top K
