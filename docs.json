@@ -11,6 +11,73 @@
   "navigation": {
     "tabs": [
       {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "index",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/projects",
+              "concepts/game-elements",
+              "concepts/balance-system",
+              "concepts/versioning"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/create-first-game",
+              "guides/design-mechanics",
+              "guides/export-publish",
+              "guides/collaborate"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/glossary",
+              "reference/changelog"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Projects",
+            "pages": [
+              "api-reference/projects/list",
+              "api-reference/projects/create",
+              "api-reference/projects/get",
+              "api-reference/projects/update",
+              "api-reference/projects/delete"
+            ]
+          },
+          {
+            "group": "Game Elements",
+            "pages": [
+              "api-reference/elements/list",
+              "api-reference/elements/create",
+              "api-reference/elements/update"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "기획 문서",
         "groups": [
           {
@@ -33,6 +100,12 @@
                   "standards/document-types/data"
                 ]
               }
+            ]
+          },
+          {
+            "group": "프로젝트 운영",
+            "pages": [
+              "operations/plane"
             ]
           },
           {
