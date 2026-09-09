@@ -1,0 +1,49 @@
+---
+title: "Delete a Project - Magic Forge API"
+sidebarTitle: "Delete Project"
+description: "DELETE /projects/{id} — Permanently delete a project and all its elements, snapshots, and collaborator associations. This action cannot be undone."
+---
+
+Remove a project entirely from your workspace. This permanently deletes the project and all nested data, including game elements, version snapshots, and collaborator links. There is no recovery path.
+
+## Endpoint
+
+```text
+DELETE https://api.magic-forge.com/v1/projects/{id}
+```
+
+## Path parameters
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | Yes | Unique project identifier (e.g., `proj_2K9mNpQ8rL`). |
+
+## Example request
+
+```bash
+curl -X DELETE "https://api.magic-forge.com/v1/projects/proj_2K9mNpQ8rL" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Example response (204 No Content)
+
+The API returns a `204` status with an empty body on success.
+
+```text
+HTTP/1.1 204 No Content
+```
+
+<Warning>
+  This action is irreversible. All elements, snapshots, and collaborator associations for this project are permanently removed.
+</Warning>
+
+<Tip>
+  If you are unsure, consider [archiving the project](/api-reference/projects/update) instead. Send a PATCH request with `"status": "archived"` to hide the project from active views while preserving its data.
+</Tip>
+
+## Error responses
+
+| Status | Code | What to check |
+| --- | --- | --- |
+| `404` | `not_found` | The project ID does not exist or you do not have access. |
+| `403` | `forbidden` | You do not have permission to delete this project. |

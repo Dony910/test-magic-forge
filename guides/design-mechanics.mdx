@@ -1,0 +1,114 @@
+---
+title: "Design and Document Game Mechanics in Magic Forge"
+sidebarTitle: "Design Mechanics"
+description: "Learn how to break down complex game mechanics into elements and attributes, document interactions, and use the balance system to test your design."
+---
+
+Game mechanics are the rules and systems that drive player experience. In Magic Forge, you model mechanics as structured elements with typed attributes and relationships. This guide shows you how to decompose a mechanic, document its parts, and validate balance before production.
+
+<Steps>
+  <Step title="Identify the mechanic">
+    Start by naming the mechanic and describing what the player does. For example, "Double Jump" lets the player press jump a second time while airborne to gain extra height. Write a one-sentence description of the player action and the resulting outcome.
+
+    In Magic Forge, create this as an element of type **mechanic**:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/elements \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "project_id": "{project_id}",
+        "name": "Double Jump",
+        "type": "mechanic",
+        "description": "Press jump again in mid-air to gain a second burst of upward velocity."
+      }'
+    ```
+  </Step>
+  <Step title="Create element types">
+    Break the mechanic into sub-components. For Double Jump, you might need a **character** element (the player controller), a **status effect** (airborne flag), and an **ability** (the jump itself). Create each as a separate element so you can reuse them across designs.
+
+    Create a reusable ability element:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/elements \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "project_id": "{project_id}",
+        "name": "Air Dash",
+        "type": "ability",
+        "sub_type": "movement",
+        "description": "A short horizontal burst usable once per jump arc."
+      }'
+    ```
+  </Step>
+  <Step title="Define attributes">
+    Add numerical attributes to every element so the balance system can evaluate them. For an ability, include cooldown, cost, range, and magnitude. For a character, include health, speed, and mass.
+
+    Update the Double Jump mechanic with tuning values:
+
+    ```bash
+    curl -X PATCH https://api.magic-forge.com/v1/elements/{element_id} \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "attributes": {
+          "extra_height": 6,
+          "max_uses": 1,
+          "coyote_time_ms": 100,
+          "stamina_cost": 15
+        }
+      }'
+    ```
+
+    These attributes become the inputs for balance checks and spreadsheets later.
+  </Step>
+  <Step title="Link related elements">
+    Use the **Relationships** panel to connect elements. Link the Double Jump mechanic to the Player Controller character, the Jump Input action, and the Stamina resource. This lets you trace how a change to one element affects the whole system.
+
+    Create a relationship via the API by updating the source element:
+
+    ```bash
+    curl -X PATCH https://api.magic-forge.com/v1/elements/{element_id} \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "relationships": [
+          { "target_element_id": "{player_controller_id}", "relation": "requires" },
+          { "target_element_id": "{stamina_id}", "relation": "consumes" }
+        ]
+      }'
+    ```
+  </Step>
+  <Step title="Run a balance check">
+    Open the **Balance** panel and select the elements you want to evaluate. Magic Forge aggregates their attributes into a comparison table and flags outliers, such as a stamina cost that is disproportionately high relative to the reward.
+
+    You can also trigger a balance report through the API:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/elements/balance-check \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "project_id": "{project_id}",
+        "element_ids": ["{double_jump_id}", "{air_dash_id}", "{stamina_id}"]
+      }'
+    ```
+
+    The response includes a summary of attribute distributions, warnings for extreme values, and suggested ranges based on your project's genre profile.
+  </Step>
+</Steps>
+
+<Tip>
+  Start with one mechanic and three to five attributes. It is easier to expand a simple, well-documented system than to untangle an over-engineered one. You can always clone an element and iterate once the core loop feels right.
+</Tip>
+
+## Result
+
+You now have a mechanic decomposed into reusable, attributed elements with documented relationships and a balance report. This structure makes it easy to iterate, compare alternatives, and communicate intent to engineers and teammates.
+
+## Next steps
+
+- [Create your first game design document](/guides/create-first-game)
+- [Export and publish your design](/guides/export-publish)
+- [Collaborate with your team](/guides/collaborate)

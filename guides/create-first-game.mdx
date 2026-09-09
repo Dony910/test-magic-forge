@@ -1,0 +1,129 @@
+---
+title: "Create Your First Game Design Document"
+sidebarTitle: "First GDD"
+description: "Walk through creating a complete game design document in Magic Forge: project setup, adding core elements, writing design notes, and organizing your content."
+---
+
+This guide walks you through building a complete game design document (GDD) in Magic Forge from scratch. You will create a project, define the genre and scope, add core game elements, write design notes, and generate a shareable preview. By the end, you will have a structured GDD ready for iteration and collaboration.
+
+<Steps>
+  <Step title="Create a project">
+    Start from the Magic Forge dashboard and click **New Project**. Give your project a name, such as "Skyward Realms", and pick a template or start blank. The project becomes your central workspace for the entire design document.
+
+    You can also create a project through the API:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/projects \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "Skyward Realms",
+        "description": "A 2D action-platformer set in floating sky kingdoms.",
+        "genre": "action-platformer",
+        "status": "pre-production"
+      }'
+    ```
+
+    The API returns the created project object, including its `id` and `slug`, which you will use in later steps.
+  </Step>
+  <Step title="Define genre and scope">
+    Open the project **Overview** tab and fill in the genre, target platform, and intended audience. Set the scope by documenting the target playtime, core loop, and key pillars. This keeps the team aligned on what the game is (and is not) meant to be.
+
+    Use the API to update these fields:
+
+    ```bash
+    curl -X PATCH https://api.magic-forge.com/v1/projects/{project_id} \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "genre": "action-platformer",
+        "target_platforms": ["PC", "Switch"],
+        "core_pillars": ["fluid movement", "elemental combat", "exploration"]
+      }'
+    ```
+  </Step>
+  <Step title="Add core game elements">
+    Navigate to the **Elements** section and create the building blocks of your design. Add a player hero, a basic enemy type, and a collectible item. For each element, specify a type, attributes (such as health or damage), and a short description.
+
+    Create an element via the API:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/elements \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "project_id": "{project_id}",
+        "name": "Sky Knight",
+        "type": "character",
+        "sub_type": "hero",
+        "attributes": {
+          "health": 100,
+          "speed": 8,
+          "jump_height": 12
+        },
+        "description": "The main protagonist who wields wind magic."
+      }'
+    ```
+
+    Repeat this step for each core element. You can also create an enemy and an item to round out the foundational set:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/elements \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "project_id": "{project_id}",
+        "name": "Storm Harpy",
+        "type": "character",
+        "sub_type": "enemy",
+        "attributes": { "health": 40, "damage": 12, "aggro_range": 15 },
+        "description": "A flying enemy that dives at the player."
+      }'
+    ```
+  </Step>
+  <Step title="Write design notes">
+    Open each element and add design notes in the **Notes** panel. Document intent, reference games, open questions, and iteration history. For example, under the Sky Knight, note why the jump height is set to 12 and what playtest feedback might change it.
+
+    You can retrieve an element to review or update its notes:
+
+    ```bash
+    curl https://api.magic-forge.com/v1/elements/{element_id} \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+
+    Then update it with new notes:
+
+    ```bash
+    curl -X PATCH https://api.magic-forge.com/v1/elements/{element_id} \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "design_notes": "Jump height tuned for 2-tile gaps. May increase if vertical levels expand."
+      }'
+    ```
+  </Step>
+  <Step title="Preview and share">
+    Click **Preview** to see a read-only view of your GDD as a stakeholder would see it. When you are ready, click **Publish** to generate a shareable link. You can set access to "team only" or "public read-only."
+
+    To publish via the API:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/projects/{project_id}/publish \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{ "visibility": "read_only" }'
+    ```
+
+    The response includes the `share_url` you can send to collaborators, producers, or publishers.
+  </Step>
+</Steps>
+
+## Result
+
+Your project now contains a structured GDD with defined scope, typed game elements, documented design rationale, and a shareable preview link. You can iterate on any element, track changes through versioning, and invite teammates to collaborate.
+
+## Next steps
+
+- [Design and document game mechanics](/guides/design-mechanics)
+- [Collaborate with your team](/guides/collaborate)
+- [Export and publish your GDD](/guides/export-publish)

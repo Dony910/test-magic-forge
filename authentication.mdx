@@ -1,0 +1,61 @@
+---
+title: "Authenticate Your Magic Forge Requests"
+sidebarTitle: "Authentication"
+description: "Magic Forge uses API keys for authentication. Learn how to generate a key, pass it in requests, handle scopes, and rotate credentials safely."
+---
+
+Magic Forge uses API keys to authenticate all requests to the REST API. Every request must include a valid key in the `Authorization` header. This page explains how to generate a key, choose the right permission scope, include it in your requests, and rotate credentials when needed.
+
+## Generate an API key
+
+Open the Magic Forge dashboard and go to **Settings > API Keys**. Click **Generate Key**, give it a descriptive name (for example, `"CI/CD Pipeline"` or `"Local Dev"`), choose the scope you need, and confirm. Copy the displayed key right away; Magic Forge only shows the full token once.
+
+## Include the key in requests
+
+Send your key in the `Authorization` header using the Bearer scheme:
+
+```text
+Authorization: Bearer YOUR_API_KEY
+```
+
+### Example curl request
+
+```bash
+curl -X GET "https://api.magic-forge.com/v1/projects" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## API key scopes
+
+Every key is issued with one of three scopes. Scope controls what the key can read or change.
+
+| Scope | Permissions |
+| --- | --- |
+| `read` | List and fetch projects, elements, versions, and settings. Cannot create, update, or delete. |
+| `write` | Full read access plus create, update, and delete for projects and elements. Cannot manage team members or rotate keys. |
+| `admin` | Full write access plus team management, billing read access, and key rotation. Use this scope only for admin integrations. |
+
+<Tip>
+  Start with the lowest scope your workflow needs. A `read` key is enough for dashboard scripts, build pipelines, and analytics exporters.
+</Tip>
+
+## Store and manage keys safely
+
+<Warning>
+  Do not commit API keys to version control. If a key is exposed, rotate it immediately.
+</Warning>
+
+Store keys in environment variables or a secrets manager. Never hardcode them in source files or client-side code. If you are using GitHub Actions, GitLab CI, or another CI/CD platform, use encrypted secrets or protected variables.
+
+## Rotate a key
+
+If you suspect a key has been exposed, or as part of a regular security policy, you can rotate it in a few steps:
+
+1. Go to **Settings > API Keys** in the dashboard.
+2. Find the key you want to replace and click **Revoke**. This immediately disables the old key.
+3. Generate a new key with the same scope and update your environment variables or secrets manager.
+4. Verify your integrations are still working by making a test request.
+
+<Note>
+  Revoking a key takes effect within seconds, but some integrations may cache headers briefly. Allow up to one minute for the change to propagate across all systems.
+</Note>

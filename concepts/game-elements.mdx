@@ -1,0 +1,113 @@
+---
+title: "Game Elements: The Building Blocks of Your Design"
+sidebarTitle: "Game Elements"
+description: "Game elements are the atomic units of your game design — characters, items, abilities, levels, or any custom type you define in Magic Forge."
+---
+
+Game elements are the smallest, reusable units of design you create in Magic Forge. Think of them as the nouns and verbs of your game: a playable hero, a healing potion, a double-jump ability, or the boss arena in level three. By breaking your design into discrete elements, you can balance, version, and link them together so nothing lives in a vacuum.
+
+## Built-in element types
+
+Magic Forge ships with five core types. You can extend these or create entirely custom types from the project settings.
+
+<CardGroup cols={2}>
+  <Card title="Character" icon="user">
+    Playable heroes, NPCs, enemies, and bosses. Track stats, backstory, and progression trees.
+  </Card>
+
+  <Card title="Item" icon="backpack">
+    Weapons, armor, consumables, and collectibles. Link items to characters and define drop rates.
+  </Card>
+
+  <Card title="Ability" icon="zap">
+    Spells, skills, passive traits, and combos. Document cooldowns, costs, and upgrade paths.
+  </Card>
+
+  <Card title="Level" icon="map">
+    Maps, stages, encounter zones, and mission layouts. Attach spawn points, objectives, and environmental hazards.
+  </Card>
+
+  <Card title="Custom" icon="settings">
+    Any type your design needs: vehicles, factions, dialogue trees, or economy resources.
+  </Card>
+</CardGroup>
+
+## Element properties
+
+Every element has a standard set of fields, plus type-specific attributes you define yourself.
+
+| Property | Description |
+| --- | --- |
+| Name | The display name of the element. Must be unique within its project. |
+| Description | A short paragraph explaining what the element is and how it functions in gameplay. |
+| Type | The element type: character, item, ability, level, or a custom type you created. |
+| Tags | Filterable labels such as "Rare", "Melee", or "BossEncounter". |
+| Attributes | Key/value pairs for numeric or text data: health, damage, weight, rarity tier, and so on. |
+| Relationships | Links to other elements: an item owned by a character, an ability unlocked at a level. |
+
+## Nested attributes
+
+Complex designs need more than flat key/value pairs. Magic Forge supports nested attribute objects so you can model hierarchies like upgrade trees or gear sets.
+
+```json
+{
+  "name": "Void Fang",
+  "type": "weapon",
+  "attributes": {
+    "base_damage": 42,
+    "scaling": {
+      "strength": 0.8,
+      "dexterity": 0.4
+    },
+    "effects": [
+      {
+        "trigger": "on_hit",
+        "type": "life_drain",
+        "value": 5
+      }
+    ]
+  }
+}
+```
+
+## Game element object example
+
+Here is a complete element object as returned by the API:
+
+```json
+{
+  "id": "elem_3c4d5e6f7g8h",
+  "project_id": "proj_9f8a7b6c5d4e",
+  "name": "Ember Warden",
+  "type": "character",
+  "description": "A flame-touched guardian who shields allies with molten armor.",
+  "tags": ["tank", "fire", "playable"],
+  "attributes": {
+    "health": 850,
+    "armor": 120,
+    "move_speed": 3.2,
+    "abilities": [
+      "abl_7i8j9k0l1m2n",
+      "abl_3o4p5q6r7s8t"
+    ],
+    "lore": {
+      "origin": "Ashen Peaks",
+      "faction": "Order of the Pyre"
+    }
+  },
+  "relationships": [
+    {
+      "target_element_id": "itm_9u0v1w2x3y4z",
+      "relation": "starts_with"
+    }
+  ],
+  "created_at": "2024-02-11T08:15:00Z",
+  "updated_at": "2024-05-20T16:40:00Z"
+}
+```
+
+## Next steps
+
+- Design your first mechanic using elements in the [Design Mechanics](/guides/design-mechanics) guide.
+- Connect elements to balance sheets so you can tune numbers in the [Balance System](/concepts/balance-system) overview.
+- See how to create and update elements with the API in the [API Reference](/api-reference/elements/create).

@@ -1,0 +1,81 @@
+---
+title: "Get a Project by ID - Magic Forge API"
+sidebarTitle: "Get Project"
+description: "GET /projects/{id} — Retrieve a single project by its unique ID, including its metadata, element count, collaborators, and latest snapshot."
+---
+
+Retrieve the full details of a single project, including its metadata, element counts, collaborators, and the latest snapshot. Use this endpoint after creating a project or when navigating from a list view.
+
+## Endpoint
+
+```text
+GET https://api.magic-forge.com/v1/projects/{id}
+```
+
+## Path parameters
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | Yes | Unique project identifier (e.g., `proj_2K9mNpQ8rL`). |
+
+## Example request
+
+```bash
+curl -X GET "https://api.magic-forge.com/v1/projects/proj_2K9mNpQ8rL" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Example response
+
+```json
+{
+  "id": "proj_2K9mNpQ8rL",
+  "name": "Stellar Outpost",
+  "description": "A space colony management sim with procedural world generation.",
+  "status": "active",
+  "visibility": "private",
+  "tags": ["rpg", "space"],
+  "element_count": 147,
+  "version_count": 23,
+  "collaborator_count": 5,
+  "created_at": "2024-10-02T14:32:10Z",
+  "updated_at": "2025-01-15T09:12:45Z",
+  "url": "https://api.magic-forge.com/v1/projects/proj_2K9mNpQ8rL",
+  "collaborators": [
+    {
+      "user_id": "usr_1a2b3c4d",
+      "email": "designer@example.com",
+      "role": "editor",
+      "joined_at": "2024-10-05T10:00:00Z"
+    },
+    {
+      "user_id": "usr_9z8y7x6w",
+      "email": "lead@example.com",
+      "role": "owner",
+      "joined_at": "2024-10-02T14:32:10Z"
+    }
+  ],
+  "latest_snapshot": {
+    "version_id": "ver_3F4gH5iJkL",
+    "version_number": 23,
+    "created_at": "2025-01-15T09:12:45Z",
+    "created_by": "usr_1a2b3c4d",
+    "summary": "Balanced weapon damage values and updated colony resource table."
+  }
+}
+```
+
+<ResponseField name="collaborators" type="array">
+  List of users with access to this project. Each entry includes `user_id`, `email`, `role`, and `joined_at`.
+</ResponseField>
+
+<ResponseField name="latest_snapshot" type="object">
+  Summary of the most recent version snapshot, including the version number, timestamp, author, and a short change summary.
+</ResponseField>
+
+## Error responses
+
+| Status | Code | What to check |
+| --- | --- | --- |
+| `404` | `not_found` | The project ID does not exist or you do not have access. |
+| `403` | `forbidden` | You do not have permission to view this project. |

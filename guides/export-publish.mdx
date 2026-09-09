@@ -1,0 +1,115 @@
+---
+title: "Export and Publish Your Game Design Documents"
+sidebarTitle: "Export and Publish"
+description: "Magic Forge lets you export your game design documents as PDF, Markdown, or JSON, and publish a shareable read-only link for stakeholders and team members."
+---
+
+When your game design document is ready for review, you need to get it into the hands of stakeholders, publishers, or teammates who do not use Magic Forge directly. Magic Forge supports exporting to three formats and publishing a secure, read-only link you can share instantly.
+
+<Tabs>
+  <Tab title="PDF">
+    PDF exports are ideal for formal submissions, pitch decks, and publisher reviews. The PDF preserves layout, hierarchy, and cover art. To generate one, open a project, click the **Export** menu, and choose **PDF**.
+
+    Trigger a PDF export via the API:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/projects/{project_id}/exports \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "format": "pdf",
+        "include_cover": true,
+        "include_glossary": true
+      }'
+    ```
+
+    The response includes a `download_url` that is valid for 24 hours. You can also request a notification when the export is ready by adding `"notify_on_complete": true`.
+  </Tab>
+  <Tab title="Markdown">
+    Markdown exports are perfect for version control, wikis, and developer handoffs. All element descriptions, attributes, and design notes are rendered as structured Markdown files with frontmatter.
+
+    Trigger a Markdown export via the API:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/projects/{project_id}/exports \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "format": "markdown",
+        "flatten_hierarchy": false,
+        "include_toc": true
+      }'
+    ```
+
+    The export produces a ZIP archive containing one `.md` file per element and an `index.md` for the project overview.
+  </Tab>
+  <Tab title="JSON">
+    JSON exports contain the full structured data of your project, including all elements, attributes, relationships, design notes, and version history. Use this format for backups, migrations, or custom tooling.
+
+    Trigger a JSON export via the API:
+
+    ```bash
+    curl -X POST https://api.magic-forge.com/v1/projects/{project_id}/exports \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "format": "json",
+        "include_history": true,
+        "include_attachments": false
+      }'
+    ```
+
+    The JSON schema mirrors the API response structure, so you can re-import or transform the data with scripts.
+  </Tab>
+</Tabs>
+
+## Publish a shareable link
+
+In addition to file exports, you can publish a live, read-only view of your project. Click **Publish** in the project header, then choose a visibility level:
+
+- **Team only** (default): anyone with a Magic Forge account and project access can view.
+- **Public read-only**: anyone with the link can view, no login required.
+
+<Warning>
+  Public read-only links expose your full project content to anyone who has the URL. Do not use this setting for unreleased IP or confidential designs.
+</Warning>
+
+You can manage published links from the **Share** panel. Revoke a link at any time to immediately disable access.
+
+## API endpoint for exports
+
+All exports are triggered from a single endpoint. The `format` field determines the output type.
+
+```bash
+curl -X POST https://api.magic-forge.com/v1/projects/{project_id}/exports \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "format": "pdf",
+    "include_cover": true,
+    "include_glossary": true,
+    "notify_on_complete": true
+  }'
+```
+
+<ResponseField name="id" type="string">
+  Unique identifier for the export job.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  One of `queued`, `processing`, `completed`, or `failed`.
+</ResponseField>
+
+<ResponseField name="download_url" type="string">
+  Temporary URL to retrieve the file once `status` is `completed`.
+</ResponseField>
+
+## Result
+
+You can now distribute your GDD as a polished PDF, a developer-friendly Markdown bundle, a structured JSON archive, or a living web link. Choose the format that matches your audience and workflow.
+
+## Next steps
+
+- [Collaborate with your team](/guides/collaborate)
+- [Design and document game mechanics](/guides/design-mechanics)
+- [Reference: Glossary](/reference/glossary)

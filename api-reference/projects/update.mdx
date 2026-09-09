@@ -1,0 +1,75 @@
+---
+title: "Update a Project - Magic Forge API"
+sidebarTitle: "Update Project"
+description: "PATCH /projects/{id} — Update a project name, description, tags, or visibility. Only the fields you provide are changed; omitted fields retain their current values."
+---
+
+Modify one or more fields on an existing project. The request is a partial update: send only the fields you want to change. Omitted fields keep their current values.
+
+## Endpoint
+
+```text
+PATCH https://api.magic-forge.com/v1/projects/{id}
+```
+
+## Path parameters
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | Yes | Unique project identifier (e.g., `proj_2K9mNpQ8rL`). |
+
+## Request body
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | No | New project name (1–120 characters). |
+| `description` | `string` | No | New description (max 2000 characters). Pass `null` to clear. |
+| `tags` | `string[]` | No | Replaces the entire tag list (max 10 tags, 30 chars each). |
+| `visibility` | `string` | No | `public` or `private`. |
+| `status` | `string` | No | `draft`, `active`, or `archived`. Use `archived` to soft-delete. |
+
+## Example request
+
+```bash
+curl -X PATCH "https://api.magic-forge.com/v1/projects/proj_2K9mNpQ8rL" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Stellar Outpost: Frontier",
+    "tags": ["rpg", "space", "simulation"],
+    "status": "active"
+  }'
+```
+
+## Example response
+
+```json
+{
+  "id": "proj_2K9mNpQ8rL",
+  "name": "Stellar Outpost: Frontier",
+  "description": "A space colony management sim with procedural world generation.",
+  "status": "active",
+  "visibility": "private",
+  "tags": ["rpg", "space", "simulation"],
+  "element_count": 147,
+  "version_count": 23,
+  "collaborator_count": 5,
+  "created_at": "2024-10-02T14:32:10Z",
+  "updated_at": "2025-01-18T10:55:12Z",
+  "url": "https://api.magic-forge.com/v1/projects/proj_2K9mNpQ8rL"
+}
+```
+
+<Tip>
+  Changing `visibility` to `public` immediately makes the project discoverable in your workspace directory. Changing it back to `private` restricts access again.
+</Tip>
+
+## Error responses
+
+| Status | Code | What to check |
+| --- | --- | --- |
+| `400` | `invalid_request` | Malformed JSON or a field exceeds its length limit. |
+| `404` | `not_found` | The project ID does not exist or you do not have access. |
+| `403` | `forbidden` | You do not have permission to edit this project. |
+| `409` | `name_taken` | Another project already uses the requested name. |
+| `422` | `validation_error` | `status`, `visibility`, or `tags` contain invalid values. |

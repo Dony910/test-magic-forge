@@ -1,0 +1,42 @@
+---
+title: "Magic Forge Changelog: Updates and New Features"
+sidebarTitle: "Changelog"
+description: "Track new features, improvements, and breaking changes in Magic Forge. Entries are listed newest first with semantic version tags."
+---
+
+This changelog tracks releases for the Magic Forge platform and API. Entries are ordered newest first. Breaking changes are flagged so you can update integrations and workflows accordingly.
+
+---
+
+## v1.3.0 — 2024-11-14
+
+- **Balance System UI**: Redesigned balance sheet interface with color-coded variance indicators, drag-and-drop column reordering, and inline attribute editing.
+- **API Export Endpoint**: Added `GET /projects/{id}/export` to programmatically download a project or balance sheet as JSON or Markdown.
+- **Performance**: Improved snapshot load times for large projects with more than 500 elements.
+- **Fixes**: Resolved an issue where version tags could not be deleted by workspace admins.
+
+<Note type="warning">
+  **Breaking change**: The `GET /projects/{id}/export` endpoint replaces the deprecated `POST /projects/{id}/download` route, which will be removed in v1.4.0. Update integrations to use the new method and header-based format selection.
+</Note>
+
+---
+
+## v1.2.0 — 2024-10-03
+
+- **Real-Time Collaboration**: Multiple teammates can now edit a project simultaneously. Presence cursors, live attribute updates, and conflict resolution are handled automatically.
+- **Comments**: Added inline commenting on elements and balance sheets. Tag collaborators with `@username` to notify them directly.
+- **Activity Feed**: New sidebar panel shows recent edits, comments, and snapshot creation events per project.
+- **Fixes**: Fixed a sync bug where rapid consecutive saves could occasionally drop an attribute update.
+
+---
+
+## v1.1.0 — 2024-08-20
+
+- **Versioning System**: Full snapshot history for every project. Create snapshots manually or enable auto-snapshots on a daily schedule.
+- **Snapshot Compare**: Side-by-side diff view for snapshots. See exactly which elements and attributes changed between any two saved versions.
+- **Version Tags**: Assign semantic tags to snapshots for milestone tracking, such as `alpha-1` or `v0.5.0`.
+- **Fixes**: Improved reliability of large attribute imports from CSV.
+
+<Note type="warning">
+  **Breaking change**: Snapshots created before v1.1.0 are migrated to the new format but no longer support deep attribute-level diffs. New snapshots going forward include full lineage data.
+</Note>

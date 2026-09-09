@@ -1,0 +1,66 @@
+---
+title: "Balance System: Keep Your Game Fair and Fun"
+sidebarTitle: "Balance System"
+description: "The Magic Forge balance system lets you define numeric attributes, set thresholds, and visualize power curves to keep your game design balanced and testable."
+---
+
+The balance system in Magic Forge turns your design spreadsheets into living, queryable data. Instead of tracking weapon damage or character health in static tables, you define numeric attributes, set acceptable ranges, and let Magic Forge alert you when a value drifts outside the fun zone. This helps you catch overpowered combos and underwhelming abilities before they reach playtesters.
+
+## Attribute ranges
+
+Every numeric attribute on a game element can carry a minimum and maximum bound. Ranges enforce consistency across your design and make it easy to spot outliers at a glance.
+
+<Steps>
+  <Step title="Open the Balance tab">
+    Inside your project, navigate to the Balance tab from the left sidebar.
+  </Step>
+  <Step title="Select an element type">
+    Choose which type you want to balance, such as Characters or Weapons.
+  </Step>
+  <Step title="Set min, max, and target values">
+    For each attribute column, enter a target value and optional min/max bounds. Magic Forge highlights cells that fall outside the range.
+  </Step>
+</Steps>
+
+## Balance sheets
+
+A balance sheet is a live table that aggregates numeric attributes from every element of a given type. You can sort, filter, and export the sheet at any time.
+
+| Element | Health | Armor | Move Speed | Power Score |
+| --- | --- | --- | --- | --- |
+| Ember Warden | 850 | 120 | 3.2 | 1,024 |
+| Frost Saber | 620 | 80 | 4.1 | 978 |
+| Stone Colossus | 1,200 | 200 | 2.0 | 1,450 |
+| Shadow Stalker | 540 | 60 | 4.8 | 890 |
+
+<Note>
+  The Power Score column is calculated automatically from a formula you define in the sheet settings. You can weight attributes differently for each project.
+</Note>
+
+## Power curves
+
+Power curves show how an attribute scales across your entire roster. Use them to verify that early-game characters feel weaker than late-game ones, or that no single item outclasses everything else at its tier.
+
+<Tip>
+  Toggle the Power Curve visualization from the balance sheet toolbar. You can plot any numeric attribute against element level, rarity tier, or a custom axis.
+</Tip>
+
+## Threshold alerts
+
+Threshold alerts notify you when a value crosses a boundary you define. Alerts appear in the project activity feed and can be sent to Slack or email if you have integrations enabled.
+
+<CardGroup cols={2}>
+  <Card title="Range Alert" icon="alert-triangle">
+    Fires when an attribute is outside its min/max range. Use this to enforce hard design limits.
+  </Card>
+
+  <Card title="Trend Alert" icon="trending-up">
+    Fires when an attribute changes by more than a specified percentage between versions. Use this to catch sudden spikes or nerfs.
+  </Card>
+</CardGroup>
+
+## Next steps
+
+- Tune your first mechanic in the [Design Mechanics](/guides/design-mechanics) guide.
+- Export a balance report for your team in the [Export and Publish](/guides/export-publish) guide.
+- Learn how version history works when you tweak numbers in the [Versioning](/concepts/versioning) overview.

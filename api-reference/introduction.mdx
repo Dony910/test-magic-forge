@@ -1,0 +1,122 @@
+---
+title: "Magic Forge API Reference Overview"
+sidebarTitle: "Overview"
+description: "The Magic Forge REST API lets you programmatically manage projects, game elements, and exports. Base URL, authentication, pagination, and error codes are explained here."
+---
+
+The Magic Forge REST API lets you create and manage projects, game elements, balance data, and exports from any language or script. This overview covers how to authenticate, how requests are structured, and how to read responses and errors.
+
+## Base URL
+
+All API requests use the following base URL:
+
+```text
+https://api.magic-forge.com/v1
+```
+
+## Authentication
+
+Send your API key as a Bearer token in the `Authorization` header on every request:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+To generate an API key, open your workspace settings in the Magic Forge dashboard, go to **Integrations**, and click **Generate API Key**.
+
+## Versioning
+
+The current API version is `v1`. Version bumps are communicated at least 30 days in advance. Breaking changes are flagged in the [changelog](/reference/changelog). We recommend pinning integrations to the documented endpoints and reviewing the changelog before each major release.
+
+## Pagination
+
+List endpoints return collections using cursor-based pagination. Pass `page` and `limit` as query parameters:
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `page` | integer | 1 | The page number to return |
+| `limit` | integer | 20 | Number of items per page (max 100) |
+
+Responses include pagination metadata inside a top-level `meta` object, for example:
+
+```json
+{
+  "data": [...],
+  "meta": {
+    "page": 1,
+    "limit": 20,
+    "total": 87,
+    "has_next": true
+  }
+}
+```
+
+## Rate limits
+
+The API allows up to **1,000 requests per hour** per API key. Rate limit headers are included in every response:
+
+| Header | Description |
+| --- | --- |
+| `X-RateLimit-Limit` | Maximum requests allowed per hour |
+| `X-RateLimit-Remaining` | Requests remaining in the current window |
+| `X-RateLimit-Reset` | Unix timestamp when the current window resets |
+
+If you exceed the limit, the API returns `429 Too Many Requests`. Wait until the reset timestamp before retrying.
+
+## Errors
+
+Errors use a standard envelope format:
+
+```json
+{
+  "error": {
+    "code": "resource_not_found",
+    "message": "The requested project does not exist or you do not have access."
+  }
+}
+```
+
+### HTTP status codes
+
+| Status | Meaning | What to do |
+| --- | --- | --- |
+| 200 | OK | The request succeeded. |
+| 201 | Created | The resource was created successfully. |
+| 400 | Bad Request | Check the request body and query parameters for validation errors. |
+| 401 | Unauthorized | Provide a valid `Authorization: Bearer` header. |
+| 403 | Forbidden | The key is valid but does not have permission for this resource. |
+| 404 | Not Found | The requested resource does not exist. |
+| 429 | Too Many Requests | You hit the rate limit. Retry after the `X-RateLimit-Reset` time. |
+| 500 | Internal Server Error | Retry with exponential backoff or contact support. |
+
+## Example request
+
+The following curl command lists the first page of projects in your workspace:
+
+```bash
+curl -X GET "https://api.magic-forge.com/v1/projects?page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
+
+Expected response:
+
+```json
+{
+  "data": [
+    {
+      "id": "proj_9a8b7c6d",
+      "name": "Cyber Roguelike",
+      "description": "A neon-drenched roguelike set in 2087.",
+      "created_at": "2024-10-12T14:32:00Z",
+      "updated_at": "2024-11-01T09:15:00Z"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 20,
+    "total": 3,
+    "has_next": false
+  }
+}
+```

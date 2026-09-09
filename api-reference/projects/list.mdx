@@ -1,0 +1,109 @@
+---
+title: "List All Projects - Magic Forge API"
+sidebarTitle: "List Projects"
+description: "GET /projects — Returns a paginated list of all projects in your workspace. Supports filtering by status, tag, and sort order."
+---
+
+Fetch every project you can access, with optional filters for status and tags. Use the `cursor` parameter to paginate through large workspaces.
+
+## Endpoint
+
+```text
+GET https://api.magic-forge.com/v1/projects
+```
+
+## Request parameters
+
+<ParamField query="status" default="all" type="string">
+  Filter by project status. Options: `draft`, `active`, or `archived`.
+</ParamField>
+
+<ParamField query="tag" type="string">
+  Filter by a single tag slug (case-insensitive exact match).
+</ParamField>
+
+<ParamField query="limit" default="20" type="integer">
+  Number of projects to return per page. Maximum: `100`.
+</ParamField>
+
+<ParamField query="cursor" type="string">
+  Opaque cursor for pagination. Pass the `next_cursor` value from the previous response.
+</ParamField>
+
+<ParamField query="sort" default="updated_desc" type="string">
+  Sort order. Options: `created_asc`, `created_desc`, `updated_asc`, `updated_desc`, `name_asc`, `name_desc`.
+</ParamField>
+
+## Example request
+
+```bash
+curl -X GET "https://api.magic-forge.com/v1/projects?status=active&limit=10&sort=updated_desc" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Example response
+
+```json
+{
+  "data": [
+    {
+      "id": "proj_2K9mNpQ8rL",
+      "name": "Stellar Outpost",
+      "description": "A space colony management sim with procedural world generation.",
+      "status": "active",
+      "visibility": "private",
+      "tags": ["rpg", "space"],
+      "element_count": 147,
+      "version_count": 23,
+      "collaborator_count": 5,
+      "created_at": "2024-10-02T14:32:10Z",
+      "updated_at": "2025-01-15T09:12:45Z",
+      "url": "https://api.magic-forge.com/v1/projects/proj_2K9mNpQ8rL"
+    },
+    {
+      "id": "proj_7VbX3wYzA1",
+      "name": "Dungeon Walkers",
+      "description": "Roguelike dungeon crawler focused on turn-based tactics.",
+      "status": "draft",
+      "visibility": "public",
+      "tags": ["roguelike"],
+      "element_count": 62,
+      "version_count": 8,
+      "collaborator_count": 2,
+      "created_at": "2025-01-10T11:05:00Z",
+      "updated_at": "2025-01-14T16:48:22Z",
+      "url": "https://api.magic-forge.com/v1/projects/proj_7VbX3wYzA1"
+    }
+  ],
+  "pagination": {
+    "total": 42,
+    "returned": 10,
+    "next_cursor": "eyJpZCI6InByb2pfN1ZiWDN3WXpBMSIsInVwZGF0ZWRfYXQiOiIyMDI1LTAxLTE0VDE2OjQ4OjIyWiJ9",
+    "has_more": true
+  }
+}
+```
+
+<ResponseField name="data" type="array" required>
+  List of project objects.
+</ResponseField>
+
+<ResponseField name="pagination" type="object" required>
+  <Expandable title="properties">
+    <ResponseField name="total" type="integer" required>
+      Total number of projects matching the query.
+    </ResponseField>
+
+    <ResponseField name="returned" type="integer" required>
+      Number of projects in this page.
+    </ResponseField>
+
+    <ResponseField name="next_cursor" type="string">
+      Cursor for the next page. Omitted when `has_more` is `false`.
+    </ResponseField>
+
+    <ResponseField name="has_more" type="boolean" required>
+      Whether another page of results exists.
+    </ResponseField>
+  </Expandable>
+</ResponseField>

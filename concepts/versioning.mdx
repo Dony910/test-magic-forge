@@ -1,0 +1,71 @@
+---
+title: "Versioning Your Game Design Documents"
+sidebarTitle: "Versioning"
+description: "Magic Forge automatically versions every change to your projects and elements, letting you compare snapshots, revert changes, and track design evolution."
+---
+
+Magic Forge keeps a complete, time-stamped history of every change you make to a project or game element. You never have to manually save copies of your design documents or wonder who changed a character's health stat last Tuesday. The versioning system records the full state of your design at every step, so you can compare snapshots, tag important milestones, and roll back mistakes in seconds.
+
+## Automatic snapshots
+
+Every edit triggers an automatic snapshot. Whether you update an element attribute, add a new collaborator, or modify a balance sheet formula, Magic Forge stores a restore point behind the scenes.
+
+<Note>
+  Auto-save runs continuously while you work in the editor. There is no manual Save button. If you step away and return, your last cursor position and all changes are preserved in the version stream.
+</Note>
+
+## Semantic version tags
+
+When your design reaches a stable milestone, you can tag a snapshot with a semantic version. This makes it easy to talk about design states with your team and to lock a build for playtesting.
+
+<Steps>
+  <Step title="Open version history">
+    Click the clock icon in the top toolbar of any project or element page.
+  </Step>
+  <Step title="Choose a snapshot">
+    Scroll through the timeline and select the snapshot you want to mark.
+  </Step>
+  <Step title="Tag the version">
+    Click Tag Version and enter a semantic version such as `0.4.2`. Magic Forge suggests major, minor, or patch bumps based on the scope of changes since the last tag.
+  </Step>
+</Steps>
+
+| Version | Meaning | Example |
+| --- | --- | --- |
+| Major | Redesigns, rewrites, or breaking mechanical changes. | `1.0.0` to `2.0.0` |
+| Minor | New features, elements, or non-breaking additions. | `0.3.0` to `0.4.0` |
+| Patch | Tweaks, fixes, and balance adjustments. | `0.4.1` to `0.4.2` |
+
+## Diff view
+
+The diff view lets you compare any two snapshots side by side. Added attributes appear in green, removed attributes in red, and modified values show before and after states.
+
+<Tip>
+  Use the diff view during design reviews. Share the URL directly with your team so everyone sees the same comparison without needing to open the editor.
+</Tip>
+
+## Reverting changes
+
+If a balance pass or a late-night brainstorm goes wrong, you can revert to any previous snapshot in three clicks.
+
+<Steps>
+  <Step title="Open version history">
+    Navigate to the timeline from the project or element toolbar.
+  </Step>
+  <Step title="Select a snapshot">
+    Pick the version you want to restore. A preview panel shows the state at that point in time.
+  </Step>
+  <Step title="Confirm revert">
+    Click Revert to Snapshot. Magic Forge creates a new snapshot for the revert action itself, so you can always undo the undo.
+  </Step>
+</Steps>
+
+<Warning>
+  Reverting an element restores only that element. To restore an entire project to a past state, use the project-level version history and choose Restore Project Snapshot.
+</Warning>
+
+## Next steps
+
+- See how to export tagged versions for external stakeholders in the [Export and Publish](/guides/export-publish) guide.
+- Learn how collaboration permissions affect who can tag or revert versions in the [Collaboration](/guides/collaborate) guide.
+- Start building your first project with automatic versioning in the [Quickstart](/quickstart) guide.

@@ -1,0 +1,88 @@
+---
+title: "Understanding Projects in Magic Forge"
+sidebarTitle: "Projects"
+description: "Projects are the top-level containers in Magic Forge. Each project holds your game's design documents, elements, balance sheets, and version history."
+---
+
+A project in Magic Forge is the primary workspace where you plan, document, and iterate on a single game. Every project contains its own set of game elements, balance spreadsheets, collaboration settings, and a full version history so you can track how your design evolves from early prototype to final ship.
+
+## What a project contains
+
+When you create a project, Magic Forge sets up the following structure for you:
+
+<CardGroup cols={2}>
+  <Card title="Game Elements" icon="puzzle">
+    Characters, items, abilities, levels, and any custom types you define. These are the atomic building blocks of your design.
+  </Card>
+
+  <Card title="Balance Sheets" icon="scale">
+    Numeric attributes, power curves, and threshold alerts that help you keep gameplay fair and fun.
+  </Card>
+
+  <Card title="Documents" icon="file-text">
+    Free-form design documents, lore bibles, and meeting notes written with the built-in editor.
+  </Card>
+
+  <Card title="Version History" icon="git-branch">
+    Automatic snapshots of every change so you can compare, review, and revert at any time.
+  </Card>
+</CardGroup>
+
+## Project lifecycle
+
+Projects move through three states as your game matures. You can change the status from the project settings panel.
+
+<Steps>
+  <Step title="Draft">
+    The default state for new projects. Use this while brainstorming, prototyping mechanics, and iterating on core loops. Draft projects are only visible to collaborators you explicitly invite.
+  </Step>
+  <Step title="Active">
+    Set a project to Active once you enter production or begin external playtesting. This signals to your team that the design is stabilizing and major rewrites should be avoided without discussion.
+  </Step>
+  <Step title="Archived">
+    Archive a project after release or cancellation. Archived projects are read-only, but the full version history and export functionality remain available for post-mortems or sequels.
+  </Step>
+</Steps>
+
+## Project settings
+
+You control how a project behaves and who can access it through the Settings tab.
+
+| Setting | Description |
+| --- | --- |
+| Visibility | Choose **Private** (invite only), **Team** (visible to your organization), or **Public** (anyone with the link can view). |
+| Collaborators | Add teammates by email and assign roles: Owner, Editor, or Viewer. |
+| Tags | Apply labels like "RPG", "Mobile", or "Pre-Alpha" to organize your project list. |
+| Default Element Template | Pick the element type that appears first when you add a new game element. |
+
+## Project object example
+
+When you fetch a project through the API, Magic Forge returns a JSON object like this:
+
+```json
+{
+  "id": "proj_9f8a7b6c5d4e",
+  "name": "Stellar Drift",
+  "description": "A space exploration RPG with procedural star systems.",
+  "status": "active",
+  "visibility": "team",
+  "tags": ["RPG", "Space", "PC"],
+  "owner_id": "usr_1a2b3c4d5e6f",
+  "collaborators": [
+    {
+      "user_id": "usr_7g8h9i0j1k2l",
+      "role": "editor",
+      "joined_at": "2024-03-15T09:22:00Z"
+    }
+  ],
+  "default_element_type": "character",
+  "created_at": "2024-01-10T14:30:00Z",
+  "updated_at": "2024-06-02T11:45:00Z"
+}
+```
+
+## Next steps
+
+- Create your first project and start adding game elements in the [Create Your First Game](/guides/create-first-game) guide.
+- Learn how [Game Elements](/concepts/game-elements) work inside a project.
+- Invite teammates and manage permissions in the [Collaboration](/guides/collaborate) guide.

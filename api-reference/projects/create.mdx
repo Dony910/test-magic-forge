@@ -1,0 +1,80 @@
+---
+title: "Create a New Project - Magic Forge API"
+sidebarTitle: "Create Project"
+description: "POST /projects — Create a new game design project in your workspace. Requires a name field; optionally accepts description, tags, and visibility."
+---
+
+Create a new game design project in your workspace. Every project starts with a name. You can also supply a description, tags, and visibility setting at creation time.
+
+## Endpoint
+
+```text
+POST https://api.magic-forge.com/v1/projects
+```
+
+## Request body
+
+| Field | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `name` | `string` | Yes | — | Project name (1–120 characters). |
+| `description` | `string` | No | `null` | Short project description (max 2000 characters). |
+| `tags` | `string[]` | No | `[]` | Array of tag slugs for organization (max 10 tags, 30 chars each). |
+| `visibility` | `string` | No | `"private"` | Either `public` (discoverable) or `private` (workspace members only). |
+
+## Example request
+
+```bash
+curl -X POST "https://api.magic-forge.com/v1/projects" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Neon Skies",
+    "description": "An aerial combat RPG set in a futuristic megacity.",
+    "tags": ["rpg", "combat", "scifi"],
+    "visibility": "private"
+  }'
+```
+
+## Example response (201 Created)
+
+```json
+{
+  "id": "proj_9aBc3dEfGh",
+  "name": "Neon Skies",
+  "description": "An aerial combat RPG set in a futuristic megacity.",
+  "status": "draft",
+  "visibility": "private",
+  "tags": ["rpg", "combat", "scifi"],
+  "element_count": 0,
+  "version_count": 1,
+  "collaborator_count": 1,
+  "created_at": "2025-01-18T08:22:00Z",
+  "updated_at": "2025-01-18T08:22:00Z",
+  "url": "https://api.magic-forge.com/v1/projects/proj_9aBc3dEfGh"
+}
+```
+
+<ResponseField name="id" type="string" required>
+  Unique project identifier.
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  New projects always start as `draft`.
+</ResponseField>
+
+<ResponseField name="version_count" type="integer" required>
+  Starts at `1` because an initial snapshot is created automatically.
+</ResponseField>
+
+## Error responses
+
+| Status | Code | What to check |
+| --- | --- | --- |
+| `400` | `invalid_request` | Malformed JSON or a field exceeds its length limit. |
+| `422` | `validation_error` | Missing `name`, or `visibility` is not `public`/`private`. |
+| `409` | `name_taken` | Another project in your workspace already uses this name. |
+
+## Next steps
+
+- [Create game elements](/api-reference/elements/create) inside your new project.
+- [Retrieve the project](/api-reference/projects/get) to inspect its metadata.
