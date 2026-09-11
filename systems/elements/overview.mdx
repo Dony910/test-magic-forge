@@ -96,7 +96,9 @@ MVP의 조합 입력 수는 2개이며 순서 비의존 방식입니다.
 
 원소 A + 원소 B 선택 → 입력 검증 → 부모 Affinity 보정·병합 → 반응 규칙 평가 → 최종 Affinity 선정 → combination_key 생성·기존 결과 조회 → 있으면 저장 결과 반환 → 없으면 표현 정보 생성·검증 → 원소와 조합식 저장 → 유저 보유 목록 추가
 
-두 부모 원소는 MVP에서 동등한 비중으로 조합합니다. 각 부모의 Affinity 강도 총합을 비교하고, 총합이 작은 부모의 점수를 큰 부모 총합에 맞춰 비례 보정한 뒤 같은 tag_id의 후보 점수를 합산합니다.
+두 부모 원소는 MVP에서 동등한 비중으로 조합합니다. 
+
+각 부모의 Affinity 강도 총합을 비교하고, 총합이 작은 부모의 점수를 큰 부모 총합에 맞춰 비례 보정한 뒤 같은 tag_id의 후보 점수를 합산합니다.
 
 S_A = 부모 A의 Affinity strength 총합 S_B = 부모 B의 Affinity strength 총합 T = max(S_A, S_B) 보정 점수(element, tag) = strength(tag) × T / S_element 기본 후보 점수(tag) = 두 부모의 보정 점수 합
 
